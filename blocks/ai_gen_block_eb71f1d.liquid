@@ -1,0 +1,222 @@
+{% doc %}
+  @prompt
+    can you make anoucment bar to show contactact by position center/left/right 
+    
+    icon phone 
+    icon email
+    
+    inlinle 
+{% enddoc %}
+{% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
+
+{% style %}
+  .ai-announcement-bar-{{ ai_gen_id }} {
+    display: block;
+    width: 100%;
+    background-color: {{ block.settings.background_color }};
+    padding: {{ block.settings.padding_vertical }}px 20px;
+  }
+
+  .ai-announcement-bar__container-{{ ai_gen_id }} {
+    display: flex;
+    align-items: center;
+    justify-content: {{ block.settings.alignment }};
+    gap: {{ block.settings.spacing }}px;
+    max-width: 1200px;
+    margin: 0 auto;
+    flex-wrap: wrap;
+  }
+
+  .ai-announcement-bar__contact-item-{{ ai_gen_id }} {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: {{ block.settings.text_color }};
+    text-decoration: none;
+    font-size: {{ block.settings.font_size }}px;
+    transition: opacity 0.2s ease;
+  }
+
+  .ai-announcement-bar__contact-item-{{ ai_gen_id }}:hover {
+    opacity: 0.8;
+  }
+
+  .ai-announcement-bar__icon-{{ ai_gen_id }} {
+    width: {{ block.settings.icon_size }}px;
+    height: {{ block.settings.icon_size }}px;
+    flex-shrink: 0;
+  }
+
+  .ai-announcement-bar__icon-{{ ai_gen_id }} svg {
+    width: 100%;
+    height: 100%;
+    stroke: {{ block.settings.icon_color }};
+    fill: none;
+  }
+
+  @media screen and (max-width: 749px) {
+    .ai-announcement-bar__container-{{ ai_gen_id }} {
+      justify-content: center;
+    }
+  }
+{% endstyle %}
+
+<div class="ai-announcement-bar-{{ ai_gen_id }}" {{ block.shopify_attributes }}>
+  <div class="ai-announcement-bar__container-{{ ai_gen_id }}">
+    {% if block.settings.show_phone and block.settings.phone_number != blank %}
+      <a 
+        href="tel:{{ block.settings.phone_number }}" 
+        class="ai-announcement-bar__contact-item-{{ ai_gen_id }}"
+      >
+        <span class="ai-announcement-bar__icon-{{ ai_gen_id }}">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
+          </svg>
+        </span>
+        <span>{{ block.settings.phone_number }}</span>
+      </a>
+    {% endif %}
+
+    {% if block.settings.show_email and block.settings.email_address != blank %}
+      <a 
+        href="mailto:{{ block.settings.email_address }}" 
+        class="ai-announcement-bar__contact-item-{{ ai_gen_id }}"
+      >
+        <span class="ai-announcement-bar__icon-{{ ai_gen_id }}">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+            <polyline points="22,6 12,13 2,6"></polyline>
+          </svg>
+        </span>
+        <span>{{ block.settings.email_address }}</span>
+      </a>
+    {% endif %}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Contact announcement bar",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Contact information"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_phone",
+      "label": "Show phone",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "phone_number",
+      "label": "Phone number",
+      "default": "+1 (555) 123-4567"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_email",
+      "label": "Show email",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "email_address",
+      "label": "Email address",
+      "default": "contact@example.com"
+    },
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "select",
+      "id": "alignment",
+      "label": "Alignment",
+      "options": [
+        {
+          "value": "flex-start",
+          "label": "Left"
+        },
+        {
+          "value": "center",
+          "label": "Center"
+        },
+        {
+          "value": "flex-end",
+          "label": "Right"
+        }
+      ],
+      "default": "center"
+    },
+    {
+      "type": "range",
+      "id": "spacing",
+      "label": "Spacing between items",
+      "min": 10,
+      "max": 50,
+      "step": 5,
+      "unit": "px",
+      "default": 30
+    },
+    {
+      "type": "range",
+      "id": "padding_vertical",
+      "label": "Vertical padding",
+      "min": 5,
+      "max": 30,
+      "step": 5,
+      "unit": "px",
+      "default": 10
+    },
+    {
+      "type": "header",
+      "content": "Style"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background color",
+      "default": "#7b0002"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "icon_color",
+      "label": "Icon color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "range",
+      "id": "font_size",
+      "label": "Font size",
+      "min": 12,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "default": 14
+    },
+    {
+      "type": "range",
+      "id": "icon_size",
+      "label": "Icon size",
+      "min": 14,
+      "max": 28,
+      "step": 2,
+      "unit": "px",
+      "default": 18
+    }
+  ],
+  "presets": [
+    {
+      "name": "Contact announcement bar"
+    }
+  ]
+}
+{% endschema %}
