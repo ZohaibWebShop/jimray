@@ -1,0 +1,593 @@
+{% doc %}
+  @prompt
+    create full width 2 column section 
+    
+    left image 
+    right 
+    block#1  bg with clip path
+    block#1 counter text 40+ shoud change the posision by the x, y 
+    and also change stye color of counter block#1 text: years of experince 
+    block#1 end
+    
+    block#2 heading text
+    block#3 text 
+    block#4 button with background 
+    
+    should be mobile responsive intractive and animated 
+    
+    
+{% enddoc %}
+{% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
+
+{% style %}
+  .ai-experience-section-{{ ai_gen_id }} {
+    display: block;
+    width: 100%;
+    background-color: {{ block.settings.section_background }};
+    padding: {{ block.settings.section_padding }}px 0;
+  }
+
+  .ai-experience-container-{{ ai_gen_id }} {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: {{ block.settings.column_gap }}px;
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 20px;
+  }
+
+  .ai-experience-image-column-{{ ai_gen_id }} {
+    position: relative;
+    overflow: hidden;
+    border-radius: {{ block.settings.image_border_radius }}px;
+  }
+
+  .ai-experience-image-{{ ai_gen_id }} {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  .ai-experience-image-placeholder-{{ ai_gen_id }} {
+    width: 100%;
+    height: 100%;
+    min-height: 500px;
+    background-color: #f4f4f4;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .ai-experience-image-placeholder-{{ ai_gen_id }} svg {
+    width: 100%;
+    height: 100%;
+    max-width: 400px;
+    max-height: 400px;
+  }
+
+  .ai-experience-content-column-{{ ai_gen_id }} {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: {{ block.settings.content_gap }}px;
+    padding: 40px;
+  }
+
+  .ai-experience-counter-block-{{ ai_gen_id }} {
+    position: relative;
+    display: inline-block;
+    align-self: flex-start;
+    padding: 30px 40px;
+    background-color: {{ block.settings.counter_bg_color }};
+    clip-path: polygon(0 0, 100% 0, 95% 100%, 5% 100%);
+    transform: translate({{ block.settings.counter_x_position }}px, {{ block.settings.counter_y_position }}px);
+    transition: transform 0.3s ease;
+  }
+
+  .ai-experience-counter-block-{{ ai_gen_id }}:hover {
+    transform: translate({{ block.settings.counter_x_position }}px, {{ block.settings.counter_y_position }}px) scale(1.05);
+  }
+
+  .ai-experience-counter-number-{{ ai_gen_id }} {
+    font-size: {{ block.settings.counter_font_size }}px;
+    font-weight: 700;
+    color: {{ block.settings.counter_text_color }};
+    line-height: 1;
+    margin: 0;
+  }
+
+  .ai-experience-counter-text-{{ ai_gen_id }} {
+    font-size: {{ block.settings.counter_label_size }}px;
+    color: {{ block.settings.counter_text_color }};
+    margin: 8px 0 0;
+    opacity: 0.9;
+  }
+
+  .ai-experience-heading-{{ ai_gen_id }} {
+    font-size: {{ block.settings.heading_size }}px;
+    font-weight: 600;
+    color: {{ block.settings.heading_color }};
+    line-height: 1.2;
+    margin: 0;
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  .ai-experience-heading-{{ ai_gen_id }}.ai-animate-in-{{ ai_gen_id }} {
+    animation: ai-fade-up-{{ ai_gen_id }} 0.6s ease forwards;
+  }
+
+  .ai-experience-text-{{ ai_gen_id }} {
+    font-size: {{ block.settings.text_size }}px;
+    color: {{ block.settings.text_color }};
+    line-height: 1.6;
+    margin: 0;
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  .ai-experience-text-{{ ai_gen_id }}.ai-animate-in-{{ ai_gen_id }} {
+    animation: ai-fade-up-{{ ai_gen_id }} 0.6s ease 0.2s forwards;
+  }
+
+  .ai-experience-button-{{ ai_gen_id }} {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 16px 32px;
+    background-color: {{ block.settings.button_bg_color }};
+    color: {{ block.settings.button_text_color }};
+    text-decoration: none;
+    border-radius: {{ block.settings.button_border_radius }}px;
+    font-size: {{ block.settings.button_font_size }}px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    align-self: flex-start;
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  .ai-experience-button-{{ ai_gen_id }}.ai-animate-in-{{ ai_gen_id }} {
+    animation: ai-fade-up-{{ ai_gen_id }} 0.6s ease 0.4s forwards;
+  }
+
+  .ai-experience-button-{{ ai_gen_id }}:hover {
+    background-color: {{ block.settings.button_hover_bg_color }};
+    color: {{ block.settings.button_hover_text_color }};
+    transform: translateY(-2px);
+  }
+
+  @keyframes ai-fade-up-{{ ai_gen_id }} {
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes ai-counter-pulse-{{ ai_gen_id }} {
+    0%, 100% {
+      transform: translate({{ block.settings.counter_x_position }}px, {{ block.settings.counter_y_position }}px) scale(1);
+    }
+    50% {
+      transform: translate({{ block.settings.counter_x_position }}px, {{ block.settings.counter_y_position }}px) scale(1.02);
+    }
+  }
+
+  .ai-experience-counter-block-{{ ai_gen_id }}.ai-pulse-{{ ai_gen_id }} {
+    animation: ai-counter-pulse-{{ ai_gen_id }} 2s ease-in-out infinite;
+  }
+
+  @media screen and (max-width: 749px) {
+    .ai-experience-container-{{ ai_gen_id }} {
+      grid-template-columns: 1fr;
+      gap: 30px;
+    }
+
+    .ai-experience-content-column-{{ ai_gen_id }} {
+      padding: 20px;
+    }
+
+    .ai-experience-image-placeholder-{{ ai_gen_id }} {
+      min-height: 300px;
+    }
+
+    .ai-experience-heading-{{ ai_gen_id }} {
+      font-size: calc({{ block.settings.heading_size }}px * 0.7);
+    }
+
+    .ai-experience-counter-number-{{ ai_gen_id }} {
+      font-size: calc({{ block.settings.counter_font_size }}px * 0.7);
+    }
+
+    .ai-experience-counter-block-{{ ai_gen_id }} {
+      padding: 20px 30px;
+    }
+  }
+{% endstyle %}
+
+<experience-section-{{ ai_gen_id }}
+  class="ai-experience-section-{{ ai_gen_id }}"
+  {{ block.shopify_attributes }}
+>
+  <div class="ai-experience-container-{{ ai_gen_id }}">
+    <div class="ai-experience-image-column-{{ ai_gen_id }}">
+      {% if block.settings.image %}
+        <img
+          src="{{ block.settings.image | image_url: width: 1200 }}"
+          alt="{{ block.settings.image.alt | escape }}"
+          loading="lazy"
+          width="{{ block.settings.image.width }}"
+          height="{{ block.settings.image.height }}"
+          class="ai-experience-image-{{ ai_gen_id }}"
+        >
+      {% else %}
+        <div class="ai-experience-image-placeholder-{{ ai_gen_id }}">
+          {{ 'image' | placeholder_svg_tag }}
+        </div>
+      {% endif %}
+    </div>
+
+    <div class="ai-experience-content-column-{{ ai_gen_id }}">
+      <div
+        class="ai-experience-counter-block-{{ ai_gen_id }}"
+        data-counter-target="{{ block.settings.counter_number }}"
+      >
+        <div class="ai-experience-counter-number-{{ ai_gen_id }}">0+</div>
+        <div class="ai-experience-counter-text-{{ ai_gen_id }}">{{ block.settings.counter_label }}</div>
+      </div>
+
+      {% if block.settings.heading != blank %}
+        <h2 class="ai-experience-heading-{{ ai_gen_id }}">{{ block.settings.heading }}</h2>
+      {% endif %}
+
+      {% if block.settings.text != blank %}
+        <div class="ai-experience-text-{{ ai_gen_id }}">{{ block.settings.text }}</div>
+      {% endif %}
+
+      {% if block.settings.button_text != blank %}
+        <a
+          href="{{ block.settings.button_link }}"
+          class="ai-experience-button-{{ ai_gen_id }}"
+        >
+          {{ block.settings.button_text }}
+        </a>
+      {% endif %}
+    </div>
+  </div>
+</experience-section-{{ ai_gen_id }}>
+
+<script>
+  (function() {
+    class ExperienceSection{{ ai_gen_id }} extends HTMLElement {
+      constructor() {
+        super();
+        this.counterBlock = this.querySelector('.ai-experience-counter-block-{{ ai_gen_id }}');
+        this.counterNumber = this.querySelector('.ai-experience-counter-number-{{ ai_gen_id }}');
+        this.heading = this.querySelector('.ai-experience-heading-{{ ai_gen_id }}');
+        this.text = this.querySelector('.ai-experience-text-{{ ai_gen_id }}');
+        this.button = this.querySelector('.ai-experience-button-{{ ai_gen_id }}');
+        this.hasAnimated = false;
+      }
+
+      connectedCallback() {
+        this.setupIntersectionObserver();
+      }
+
+      setupIntersectionObserver() {
+        const options = {
+          threshold: 0.2,
+          rootMargin: '0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting && !this.hasAnimated) {
+              this.hasAnimated = true;
+              this.animateContent();
+            }
+          });
+        }, options);
+
+        observer.observe(this);
+      }
+
+      animateContent() {
+        this.animateCounter();
+        
+        if (this.heading) {
+          this.heading.classList.add('ai-animate-in-{{ ai_gen_id }}');
+        }
+        
+        if (this.text) {
+          this.text.classList.add('ai-animate-in-{{ ai_gen_id }}');
+        }
+        
+        if (this.button) {
+          this.button.classList.add('ai-animate-in-{{ ai_gen_id }}');
+        }
+
+        setTimeout(() => {
+          if (this.counterBlock) {
+            this.counterBlock.classList.add('ai-pulse-{{ ai_gen_id }}');
+          }
+        }, 1000);
+      }
+
+      animateCounter() {
+        const target = parseInt(this.counterBlock.dataset.counterTarget) || 40;
+        const duration = 2000;
+        const steps = 60;
+        const increment = target / steps;
+        const stepDuration = duration / steps;
+        let current = 0;
+
+        const timer = setInterval(() => {
+          current += increment;
+          if (current >= target) {
+            current = target;
+            clearInterval(timer);
+          }
+          this.counterNumber.textContent = Math.floor(current) + '+';
+        }, stepDuration);
+      }
+    }
+
+    customElements.define('experience-section-{{ ai_gen_id }}', ExperienceSection{{ ai_gen_id }});
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Experience section",
+  "tag": null,
+  "settings": [
+    {
+      "type": "header",
+      "content": "Section"
+    },
+    {
+      "type": "color",
+      "id": "section_background",
+      "label": "Background color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "range",
+      "id": "section_padding",
+      "label": "Padding",
+      "min": 0,
+      "max": 100,
+      "step": 10,
+      "unit": "px",
+      "default": 60
+    },
+    {
+      "type": "range",
+      "id": "column_gap",
+      "label": "Column gap",
+      "min": 20,
+      "max": 100,
+      "step": 10,
+      "unit": "px",
+      "default": 60
+    },
+    {
+      "type": "range",
+      "id": "content_gap",
+      "label": "Content gap",
+      "min": 10,
+      "max": 60,
+      "step": 5,
+      "unit": "px",
+      "default": 30
+    },
+    {
+      "type": "header",
+      "content": "Image"
+    },
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Image"
+    },
+    {
+      "type": "range",
+      "id": "image_border_radius",
+      "label": "Border radius",
+      "min": 0,
+      "max": 40,
+      "step": 4,
+      "unit": "px",
+      "default": 12
+    },
+    {
+      "type": "header",
+      "content": "Counter block"
+    },
+    {
+      "type": "range",
+      "id": "counter_number",
+      "label": "Counter number",
+      "min": 1,
+      "max": 100,
+      "step": 1,
+      "default": 40
+    },
+    {
+      "type": "text",
+      "id": "counter_label",
+      "label": "Counter label",
+      "default": "Years of experience"
+    },
+    {
+      "type": "range",
+      "id": "counter_x_position",
+      "label": "Horizontal position",
+      "min": -100,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "counter_y_position",
+      "label": "Vertical position",
+      "min": -100,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "color",
+      "id": "counter_bg_color",
+      "label": "Background color",
+      "default": "#7b0002"
+    },
+    {
+      "type": "color",
+      "id": "counter_text_color",
+      "label": "Text color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "range",
+      "id": "counter_font_size",
+      "label": "Number size",
+      "min": 30,
+      "max": 80,
+      "step": 5,
+      "unit": "px",
+      "default": 60
+    },
+    {
+      "type": "range",
+      "id": "counter_label_size",
+      "label": "Label size",
+      "min": 12,
+      "max": 24,
+      "step": 2,
+      "unit": "px",
+      "default": 16
+    },
+    {
+      "type": "header",
+      "content": "Heading"
+    },
+    {
+      "type": "richtext",
+      "id": "heading",
+      "label": "Heading",
+      "default": "<p>Crafting Excellence Since 1984</p>"
+    },
+    {
+      "type": "range",
+      "id": "heading_size",
+      "label": "Size",
+      "min": 24,
+      "max": 72,
+      "step": 4,
+      "unit": "px",
+      "default": 48
+    },
+    {
+      "type": "color",
+      "id": "heading_color",
+      "label": "Color",
+      "default": "#000000"
+    },
+    {
+      "type": "header",
+      "content": "Text"
+    },
+    {
+      "type": "richtext",
+      "id": "text",
+      "label": "Text",
+      "default": "<p>We bring decades of expertise to every project, delivering quality and precision that stands the test of time.</p>"
+    },
+    {
+      "type": "range",
+      "id": "text_size",
+      "label": "Size",
+      "min": 12,
+      "max": 24,
+      "step": 2,
+      "unit": "px",
+      "default": 16
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Color",
+      "default": "#666666"
+    },
+    {
+      "type": "header",
+      "content": "Button"
+    },
+    {
+      "type": "text",
+      "id": "button_text",
+      "label": "Button text",
+      "default": "Learn more"
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "Button link"
+    },
+    {
+      "type": "color",
+      "id": "button_bg_color",
+      "label": "Background color",
+      "default": "#7b0002"
+    },
+    {
+      "type": "color",
+      "id": "button_text_color",
+      "label": "Text color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "button_hover_bg_color",
+      "label": "Hover background color",
+      "default": "#560406"
+    },
+    {
+      "type": "color",
+      "id": "button_hover_text_color",
+      "label": "Hover text color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "range",
+      "id": "button_font_size",
+      "label": "Font size",
+      "min": 12,
+      "max": 24,
+      "step": 2,
+      "unit": "px",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "button_border_radius",
+      "label": "Border radius",
+      "min": 0,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "default": 14
+    }
+  ],
+  "presets": [
+    {
+      "name": "Experience section"
+    }
+  ]
+}
+{% endschema %}
