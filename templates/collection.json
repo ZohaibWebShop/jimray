@@ -37,37 +37,10 @@
             "padding-inline-end": 0
           },
           "blocks": {}
-        },
-        "text_twGGkJ": {
-          "type": "text",
-          "name": "Description",
-          "settings": {
-            "text": "{{ closest.collection.description }}",
-            "width": "fit-content",
-            "max_width": "normal",
-            "alignment": "left",
-            "type_preset": "rte",
-            "font": "var(--font-primary--family)",
-            "font_size": "",
-            "line_height": "normal",
-            "letter_spacing": "normal",
-            "case": "none",
-            "wrap": "pretty",
-            "color": "",
-            "background": false,
-            "background_color": "#00000026",
-            "corner_radius": 0,
-            "padding-block-start": 0,
-            "padding-block-end": 0,
-            "padding-inline-start": 0,
-            "padding-inline-end": 0
-          },
-          "blocks": {}
         }
       },
       "block_order": [
-        "text_tqQTNE",
-        "text_twGGkJ"
+        "text_tqQTNE"
       ],
       "name": "Collection heading",
       "settings": {
@@ -76,15 +49,16 @@
         "horizontal_alignment": "flex-start",
         "vertical_alignment": "center",
         "align_baseline": false,
-        "horizontal_alignment_flex_direction_column": "flex-start",
+        "horizontal_alignment_flex_direction_column": "center",
         "vertical_alignment_flex_direction_column": "center",
         "gap": 12,
         "section_width": "page-width",
         "section_height": "",
         "section_height_custom": 50,
-        "color_scheme": "scheme-1",
-        "background_media": "none",
+        "color_scheme": "scheme-5",
+        "background_media": "image",
         "video_position": "cover",
+        "background_image": "{{ collection.image }}",
         "background_image_position": "cover",
         "border": "none",
         "border_width": 1,
@@ -94,8 +68,8 @@
         "overlay_color": "#00000026",
         "overlay_style": "solid",
         "gradient_direction": "to top",
-        "padding-block-start": 48,
-        "padding-block-end": 48
+        "padding-block-start": 87,
+        "padding-block-end": 100
       }
     },
     "main": {
@@ -238,6 +212,7 @@
           ]
         }
       },
+      "disabled": true,
       "settings": {
         "layout_type": "grid",
         "product_card_size": "medium",
@@ -265,13 +240,17 @@
             "grid_gap": 40,
             "background_color": "#ffffff",
             "sidebar_title": "Collections",
-            "menu_collections": [],
+            "menu_collections": [
+              "frontpage",
+              "geothermal-packing-reinforced-injectable-graphite",
+              "injectable-plastic-packing"
+            ],
             "sidebar_width": 280,
             "sidebar_padding": 25,
             "sidebar_border_radius": 12,
             "sidebar_bg_color": "#f9f9f9",
             "sidebar_border_color": "#e6e6e6",
-            "sidebar_text_color": "#333333",
+            "sidebar_text_color": "#000000",
             "sidebar_title_size": 18,
             "menu_item_font_size": 15,
             "menu_item_border_radius": 8,
@@ -288,7 +267,7 @@
             "title_font_size": 40,
             "title_color": "#000000",
             "description_font_size": 16,
-            "description_color": "#666666",
+            "description_color": "#000000",
             "products_per_row": 3,
             "products_per_row_mobile": "2",
             "products_per_page": 12,
