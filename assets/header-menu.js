@@ -122,7 +122,8 @@ class HeaderMenu extends Component {
           // Double requestAnimationFrame to ensure the height is properly calculated and not defaulting to the contain-intrinsic-size
           requestAnimationFrame(() => {
             if (submenu.offsetHeight > 0) {
-              this.headerComponent?.style.setProperty('--submenu-height', `${submenu.offsetHeight}px`);
+              // Disable submenu height setting for dropdown menus
+              // this.headerComponent?.style.setProperty('--submenu-height', `${submenu.offsetHeight}px`);
               this.#cleanupMutationObserver();
             }
           });
@@ -156,8 +157,9 @@ class HeaderMenu extends Component {
       finalHeight = 0;
     }
 
-    this.headerComponent.style.setProperty('--submenu-height', `${finalHeight}px`);
-    this.#setFullOpenHeaderHeight(finalHeight);
+    // Disable submenu height setting for dropdown menus to prevent full-screen background
+    // this.headerComponent.style.setProperty('--submenu-height', `${finalHeight}px`);
+    // this.#setFullOpenHeaderHeight(finalHeight);
     this.style.setProperty('--submenu-opacity', '1');
   };
 
@@ -190,8 +192,9 @@ class HeaderMenu extends Component {
     // Don't deactivate if the overflow menu or overflow list is still being hovered
     if (this.overflowListHovered || this.overflowMenu?.matches(':hover')) return;
 
-    this.headerComponent?.style.setProperty('--submenu-height', '0px');
-    this.#setFullOpenHeaderHeight(0);
+    // Disable submenu height setting for dropdown menus to prevent full-screen background
+    // this.headerComponent?.style.setProperty('--submenu-height', '0px');
+    // this.#setFullOpenHeaderHeight(0);
     this.style.setProperty('--submenu-opacity', '0');
     this.dataset.overflowExpanded = 'false';
 

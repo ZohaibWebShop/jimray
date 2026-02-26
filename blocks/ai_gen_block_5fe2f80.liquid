@@ -28,11 +28,23 @@
 
   .ai-three-column__column-{{ ai_gen_id }} {
     position: relative;
-    overflow: hidden;
+    display:block;
+    height: {{ block.settings.column_height }}px;
     border-radius: {{ block.settings.border_radius }}px;
-    min-height: {{ block.settings.column_height }}px;
+    overflow: hidden;
     cursor: pointer;
-    transition: transform 0.3s ease;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  .ai-three-column__column-link-{{ ai_gen_id }} {
+    display: block;
+    text-decoration: none;
+    color: inherit;
+  }
+
+  .ai-three-column__column-link-{{ ai_gen_id }}:hover {
+    text-decoration: none;
+    color: inherit;
   }
 
   .ai-three-column__column-{{ ai_gen_id }}:hover {
@@ -52,6 +64,10 @@
 
   .ai-three-column__column-{{ ai_gen_id }}:hover .ai-three-column__bg-image-{{ ai_gen_id }} {
     opacity: 0;
+  }
+
+  .ai-three-column__column-{{ ai_gen_id }}:hover .ai-three-column__heading-{{ ai_gen_id }}{
+    color: #333333;
   }
 
   .ai-three-column__bg-solid-{{ ai_gen_id }} {
@@ -155,6 +171,7 @@
     height: 100%;
     object-fit: cover;
     transition: opacity 0.5s ease;
+    filter: brightness(0) invert(1);
   }
 
   .ai-three-column__image-hover-{{ ai_gen_id }} {
@@ -167,6 +184,7 @@
 
   .ai-three-column__column-{{ ai_gen_id }}:hover .ai-three-column__image-hover-{{ ai_gen_id }} {
     opacity: 1;
+    filter: unset;
   }
 
   .ai-three-column__image-placeholder-{{ ai_gen_id }} {
@@ -184,7 +202,11 @@
   }
 
   .ai-three-column__heading-{{ ai_gen_id }} {
+    font-family:'Plus Jakarta Sans','sans-serif';
     font-size: {{ block.settings.heading_size }}px;
+    line-height:1.1;
+    text-shadow:1px 1px 0px RGBA(0,0,0,1);
+    font-weight:400;
     margin: 0;
     font-weight: 600;
   }
@@ -236,14 +258,20 @@
         assign content_image_key = 'column_' | append: i | append: '_image'
         assign content_image_hover_key = 'column_' | append: i | append: '_image_hover'
         assign heading_key = 'column_' | append: i | append: '_heading'
+        assign link_key = 'column_' | append: i | append: '_link'
 
         assign bg_image = block.settings[bg_image_key]
         assign content_image = block.settings[content_image_key]
         assign content_image_hover = block.settings[content_image_hover_key]
         assign heading = block.settings[heading_key]
+        assign column_link = block.settings[link_key]
       %}
 
-      <div class="ai-three-column__column-{{ ai_gen_id }}">
+      {% if column_link != blank %}
+        <a href="{{ column_link }}" class="ai-three-column__column-{{ ai_gen_id }} ai-three-column__column-link-{{ ai_gen_id }}">
+      {% else %}
+        <div class="ai-three-column__column-{{ ai_gen_id }}">
+      {% endif %}
         <div class="ai-three-column__bg-solid-{{ ai_gen_id }} ai-three-column__bg-solid-{{ i }}-{{ ai_gen_id }}"></div>
 
         {% if bg_image %}
@@ -296,7 +324,11 @@
             <h3 class="ai-three-column__heading-{{ ai_gen_id }} ai-three-column__heading-{{ i }}-{{ ai_gen_id }}">{{ heading }}</h3>
           {% endif %}
         </div>
-      </div>
+      {% if column_link != blank %}
+        </a>
+      {% else %}
+        </div>
+      {% endif %}
     {% endfor %}
   </div>
 </div>
@@ -462,6 +494,11 @@
       "default": "Column 1"
     },
     {
+      "type": "url",
+      "id": "column_1_link",
+      "label": "Link URL"
+    },
+    {
       "type": "color",
       "id": "column_1_text_color",
       "label": "Text color",
@@ -515,6 +552,11 @@
       "default": "Column 2"
     },
     {
+      "type": "url",
+      "id": "column_2_link",
+      "label": "Link URL"
+    },
+    {
       "type": "color",
       "id": "column_2_text_color",
       "label": "Text color",
@@ -566,6 +608,11 @@
       "id": "column_3_heading",
       "label": "Heading",
       "default": "Column 3"
+    },
+    {
+      "type": "url",
+      "id": "column_3_link",
+      "label": "Link URL"
     },
     {
       "type": "color",

@@ -60,7 +60,11 @@
   endcapture
 
   capture actions
-    render 'header-actions', customer_account_menu: section.settings.customer_account_menu, display_style: section.settings.actions_display_style, section: section
+    echo '<div class="header-actions">'
+    echo '<a href="#" class="header-actions__button button button--primary">'
+    echo 'Free Quote'
+    echo '</a>'
+    echo '</div>'
   endcapture
 
   if shop.customer_accounts_enabled
@@ -489,8 +493,7 @@
     }
 
     /* Multiple selectors for performance: each simple :has() check is faster than one complex selector with multiple conditions */
-    &:has(.mega-menu__list:hover),
-    &:has(.menu-list__link:is(:hover, [aria-expanded='true'])),
+    &:has(.menu-list__link[aria-haspopup]:is(:hover, [aria-expanded='true'])),
     &:has(.menu-list__list-item[slot='overflow'] .menu-list__link:is(:hover, [aria-expanded='true'])) {
       --header-logo-display: unset;
       --header-logo-inverse-display: unset;
@@ -592,23 +595,15 @@
   }
 
   .header__underlay-open {
-    height: var(--full-open-header-height);
-    background: linear-gradient(
-      var(--color-scheme-top-row) 0 var(--top-row-height),
-      var(--color-scheme-bottom-row) var(--top-row-height) var(--header-height),
-      var(--color-submenu) var(--header-height) 100%
-    );
-    /* header-height is updated via js, the transition works automagically */
-    transition: height var(--submenu-animation-speed) var(--ease-out-cubic);
+    /* Disable underlay for dropdown menus - only show for mega menus if needed */
+    height: 0;
+    background: transparent;
+    transition: none;
   }
 
   .header__underlay-open::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    box-shadow: var(--shadow-popover);
-    clip-path: inset(var(--header-height) 0 -100px 0); /* stylelint-disable-line */
-    transition: height var(--submenu-animation-speed) var(--ease-out-cubic);
+    /* Disable underlay shadow for dropdown menus */
+    display: none;
   }
 
   /* When top row has transparent background, make underlay inherit colors from header component */
@@ -655,7 +650,6 @@
     /* Overwrite color from color scheme, background is controlled by the underlays */
     background-color: transparent;
 
-    &:has(.mega-menu__list:hover),
     &:has(.menu-list__link[aria-haspopup]:is(:hover, [aria-expanded='true'])),
     &:has(.menu-list__list-item[slot='overflow'] .menu-list__link:is(:hover, [aria-expanded='true'])) {
       /* Only elevate the row when the submenu is open to avoid overlapping other elevated content */
@@ -863,27 +857,40 @@
     transition: opacity var(--animation-speed) var(--animation-easing);
   }
 
-  /* Header action button styles */
-  .header-actions__action {
-    --button-color: var(--color-foreground);
-    color: var(--button-color);
-    cursor: pointer;
+  /* Header actions container */
+  .header-actions {
     display: flex;
+    align-items: center;
+    gap: var(--gap-sm);
+  }
+
+  /* Header action button styles */
+  .header-actions__button {
+    padding: var(--padding-xs) var(--padding-lg);
+    font-size: var(--font-size-sm);
+    font-weight: 700;
+    line-height: 22px;
+    text-decoration: none;
+    text-transform: uppercase;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    background: #7b0002;
+    color: #ffffff;
+    clip-path: polygon(10% 0, 100% 0, 100% 75%, 90% 100%, 0 100%, 0 25%);
+    transition: all var(--animation-speed) var(--animation-easing);
+    white-space: nowrap;
+    display: inline-flex;
+    align-items: center;
     justify-content: center;
-
-    &:hover {
-      --button-color: var(--color-foreground);
-    }
+    min-height: 54px;
+    padding: 0 var(--padding-lg);
+    border: none;
+    border-radius: 0px;
   }
 
-  .header-actions__action:not(.account-button) .svg-wrapper {
-    height: var(--button-size);
-    width: var(--button-size);
-  }
-
-  .header-actions__action:not(.account-button) svg {
-    width: var(--icon-size-md);
-    height: var(--icon-size-md);
+  .header-actions__button:hover {
+    transform: translateY(-1px);
+    background: #5a0001;
+    box-shadow: 0 4px 12px rgba(123, 0, 2, 0.3);
   }
 
   .header:has(#Details-menu-drawer-container[open]) {

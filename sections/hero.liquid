@@ -536,6 +536,14 @@
     >
       {% content_for 'blocks' %}
     </div>
+    
+    <!-- Scroll Down Button -->
+    <div class="hero__scroll-down" onclick="scrollToNextSection()">
+      <img src="{{ 'scrolldown-1.gif' | asset_url }}" alt="Scroll Down" class="hero__scroll-down-image">
+      <svg class="hero__scroll-down-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="6,9 12,15 18,9"></polyline>
+      </svg>
+    </div>
   </div>
 </div>
 
@@ -744,8 +752,105 @@
       }
     }
   }
-{% endstylesheet %}
 
+  .hero__content-wrapper .text-block:first-child h2 {
+    font-weight: 500;
+  }
+  .hero__content-wrapper .text-block:nth-child(2){
+    margin-top: -15px;
+  }
+  .hero__content-wrapper .text-block:nth-child(2) h2 {
+    position:relative;
+  }
+  .hero__content-wrapper .text-block:nth-child(2) h2:after{
+    content:"";
+    position: absolute;
+    width: 380px;
+    height: 3px;
+    background:#ffffff;
+    left:50%;
+    transform:translateX(-50%);
+    bottom:-12px;
+  }
+  .hero__content-wrapper .text-block:nth-child(3) p{
+   font-weight: 400;
+   font-size:20px;
+  }
+
+  /* Scroll down button styles */
+  .hero__scroll-down {
+    position: absolute;
+    bottom: 3px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0;
+    cursor: pointer;
+    z-index: 10;
+    transition: all 0.3s ease;
+  }
+
+  .hero__scroll-down:hover {
+    transform: translateX(-50%) translateY(-5px);
+  }
+
+  .hero__scroll-down-image {
+    width: 60px;
+    height: auto;
+    opacity: 0.9;
+  }
+
+  .hero__scroll-down-icon {
+    width: 24px;
+    height: 24px;
+    color: #ffffff;
+    animation: bounce 2s infinite;
+  }
+
+  @keyframes bounce {
+    0%, 20%, 50%, 80%, 100% {
+      transform: translateY(0);
+    }
+    40% {
+      transform: translateY(-10px);
+    }
+    60% {
+      transform: translateY(-5px);
+    }
+  }
+
+  @media screen and (max-width: 749px) {
+    .hero__scroll-down {
+      bottom: 20px;
+    }
+    
+    .hero__scroll-down-image {
+      width: 50px;
+    }
+    
+    .hero__scroll-down-icon {
+      width: 20px;
+      height: 20px;
+    }
+  }
+
+
+{% endstylesheet %}
+  <script>
+    function scrollToNextSection() {
+      // Get the hero section height
+      const heroSection = document.querySelector('.hero-wrapper');
+      const heroHeight = heroSection ? heroSection.offsetHeight : window.innerHeight;
+      
+      // Smooth scroll to the next section
+      window.scrollTo({
+        top: heroHeight,
+        behavior: 'smooth'
+      });
+    }
+  </script>
 {% schema %}
 {
   "name": "t:names.hero",
