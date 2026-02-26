@@ -105,8 +105,8 @@
                     "horizontal_alignment_flex_direction_column": "flex-start",
                     "vertical_alignment_flex_direction_column": "center",
                     "gap": 6,
-                    "width": "fill",
-                    "custom_width": 100,
+                    "width": "custom",
+                    "custom_width": 63,
                     "width_mobile": "fill",
                     "custom_width_mobile": 100,
                     "height": "fit",
@@ -152,7 +152,7 @@
                         "background_color": "#00000026",
                         "corner_radius": 0,
                         "padding-block-start": 0,
-                        "padding-block-end": 0,
+                        "padding-block-end": 17,
                         "padding-inline-start": 0,
                         "padding-inline-end": 0
                       },
@@ -162,7 +162,7 @@
                       "type": "text",
                       "settings": {
                         "text": "<p>Jim Ray Company is a Manufacturer and Distributor of Sealing Products including Custom Molded Graphite Seals and Injectable Plastic Packing for the Oil and Gas Industry. These products are used worldwide in wellheads, gate valves, ball valves, plug valves, valve actuators, and reciprocating and rotary pumps by major oil and gas producers, pipelines, refineries, chemical plants, power plants, and OEM manufacturers.</p>",
-                        "width": "100%",
+                        "width": "fit-content",
                         "max_width": "normal",
                         "alignment": "left",
                         "type_preset": "rte",
