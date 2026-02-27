@@ -301,8 +301,7 @@
     flex-direction: column;
     justify-content: center;
     cursor: pointer;
-    height: 55px;
-    padding: 10px 20px;
+    padding: 14px 15px;
     margin-block: 0;
     text-align: center;
 
@@ -328,13 +327,14 @@
     }
 
     @media screen and (min-width: 750px) {
+      --menu-top-level-font-size-desktop: 16px;
       font-size: var(--menu-top-level-font-size-desktop);
     }
   }
 
-  .menu-list__link-title {
+  /* .menu-list__link-title {
     padding-inline: calc(var(--gap-xl) / 2);
-  }
+  } */
   [slot='overflow'] .menu-list__link-title {
     padding-inline: 0;
   }
