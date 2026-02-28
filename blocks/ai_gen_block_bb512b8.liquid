@@ -1,0 +1,839 @@
+{% doc %}
+  @prompt
+    contact form with following content 
+    
+    Get In Touch
+    
+    At Jim Ray Company, we strive to merit our customers’ business by providing quality products with on time deliveries. We believe in service and are dedicated to using our resources to handle customer needs.
+    
+    Please send us a message below and we will get back with you as soon as possible.
+    
+    fields
+    Full Name*
+    Email*
+    Phone
+    Interested in (check all that apply)*
+    show selected collection list should be checkedable 
+    
+    Questions or Comments
+    
+    intractive. animated, and responsive desing , add Other options on in  Get In Touch
+{% enddoc %}
+{% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
+
+{% style %}
+  .ai-contact-form-{{ ai_gen_id }} {
+    display: block;
+    width: {{ block.settings.desktop_width_percent }}%;
+    max-width: 100%;
+    margin: 0 auto;
+    padding: {{ block.settings.padding }}px;
+    background-color: {{ block.settings.background_color }};
+    border-radius: {{ block.settings.border_radius }}px;
+  }
+
+  .ai-contact-form__header-{{ ai_gen_id }} {
+    text-align: center;
+    margin-bottom: 30px;
+  }
+
+  .ai-contact-form__title-{{ ai_gen_id }} {
+    font-size: {{ block.settings.title_size }}px;
+    color: {{ block.settings.text_color }};
+    margin: 0 0 20px;
+    font-weight: 600;
+  }
+
+  .ai-contact-form__description-{{ ai_gen_id }} {
+    font-size: {{ block.settings.description_size }}px;
+    color: {{ block.settings.text_color }};
+    line-height: 1.6;
+    margin: 0;
+  }
+
+  .ai-contact-form__form-{{ ai_gen_id }} {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .ai-contact-form__field-group-{{ ai_gen_id }} {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  .ai-contact-form__field-group-{{ ai_gen_id }}.animate-in {
+    animation: ai-contact-form-slide-in-{{ ai_gen_id }} 0.5s ease forwards;
+  }
+
+  .ai-contact-form__label-{{ ai_gen_id }} {
+    font-size: 14px;
+    font-weight: 600;
+    color: {{ block.settings.text_color }};
+  }
+
+  .ai-contact-form__required-{{ ai_gen_id }} {
+    color: {{ block.settings.error_color }};
+  }
+
+  .ai-contact-form__input-{{ ai_gen_id }},
+  .ai-contact-form__textarea-{{ ai_gen_id }} {
+    padding: 12px 16px;
+    border: 2px solid {{ block.settings.input_border_color }};
+    border-radius: {{ block.settings.input_border_radius }}px;
+    font-size: 14px;
+    color: {{ block.settings.text_color }};
+    background-color: {{ block.settings.input_background }};
+    transition: all 0.3s ease;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .ai-contact-form__input-{{ ai_gen_id }}:focus,
+  .ai-contact-form__textarea-{{ ai_gen_id }}:focus {
+    outline: none;
+    border-color: {{ block.settings.primary_color }};
+    box-shadow: 0 0 0 3px {{ block.settings.primary_color }}33;
+    transform: translateY(-2px);
+  }
+
+  .ai-contact-form__textarea-{{ ai_gen_id }} {
+    min-height: 120px;
+    resize: vertical;
+    font-family: inherit;
+  }
+
+  .ai-contact-form__collections-{{ ai_gen_id }} {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 12px;
+  }
+
+  .ai-contact-form__checkbox-wrapper-{{ ai_gen_id }} {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px;
+    border: 2px solid {{ block.settings.input_border_color }};
+    border-radius: {{ block.settings.input_border_radius }}px;
+    background-color: {{ block.settings.input_background }};
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+
+  .ai-contact-form__checkbox-wrapper-{{ ai_gen_id }}:hover {
+    border-color: {{ block.settings.primary_color }};
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px {{ block.settings.primary_color }}1a;
+  }
+
+  .ai-contact-form__checkbox-{{ ai_gen_id }} {
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+    accent-color: {{ block.settings.primary_color }};
+  }
+
+  .ai-contact-form__checkbox-label-{{ ai_gen_id }} {
+    font-size: 14px;
+    color: {{ block.settings.text_color }};
+    cursor: pointer;
+    flex: 1;
+  }
+
+  .ai-contact-form__other-input-{{ ai_gen_id }} {
+    margin-top: 12px;
+    max-height: 0;
+    overflow: hidden;
+    opacity: 0;
+    transition: all 0.3s ease;
+  }
+
+  .ai-contact-form__other-input-{{ ai_gen_id }}.show {
+    max-height: 100px;
+    opacity: 1;
+  }
+
+  .ai-contact-form__button-{{ ai_gen_id }} {
+    padding: 16px 32px;
+    background-color: {{ block.settings.button_color }};
+    color: {{ block.settings.button_text_color }};
+    border: none;
+    border-radius: {{ block.settings.button_border_radius }}px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .ai-contact-form__button-{{ ai_gen_id }}::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    background-color: {{ block.settings.button_hover_color }};
+    transform: translate(-50%, -50%);
+    transition: width 0.5s ease, height 0.5s ease;
+  }
+
+  .ai-contact-form__button-{{ ai_gen_id }}:hover::before {
+    width: 300%;
+    height: 300%;
+  }
+
+  .ai-contact-form__button-{{ ai_gen_id }}:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px {{ block.settings.button_color }}4d;
+  }
+
+  .ai-contact-form__button-text-{{ ai_gen_id }} {
+    position: relative;
+    z-index: 1;
+  }
+
+  .ai-contact-form__success-{{ ai_gen_id }} {
+    padding: 16px;
+    background-color: {{ block.settings.success_color }}1a;
+    border: 2px solid {{ block.settings.success_color }};
+    border-radius: {{ block.settings.input_border_radius }}px;
+    color: {{ block.settings.success_color }};
+    font-size: 14px;
+    text-align: center;
+    margin-top: 16px;
+  }
+
+  .ai-contact-form__error-{{ ai_gen_id }} {
+    padding: 16px;
+    background-color: {{ block.settings.error_color }}1a;
+    border: 2px solid {{ block.settings.error_color }};
+    border-radius: {{ block.settings.input_border_radius }}px;
+    color: {{ block.settings.error_color }};
+    font-size: 14px;
+    margin-top: 16px;
+  }
+
+  @keyframes ai-contact-form-slide-in-{{ ai_gen_id }} {
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @media screen and (max-width: 749px) {
+    .ai-contact-form-{{ ai_gen_id }} {
+      width: 100%;
+      padding: {{ block.settings.padding | times: 0.6 }}px;
+    }
+
+    .ai-contact-form__title-{{ ai_gen_id }} {
+      font-size: {{ block.settings.title_size | times: 0.7 }}px;
+    }
+
+    .ai-contact-form__description-{{ ai_gen_id }} {
+      font-size: {{ block.settings.description_size | times: 0.9 }}px;
+    }
+
+    .ai-contact-form__collections-{{ ai_gen_id }} {
+      grid-template-columns: 1fr;
+    }
+  }
+{% endstyle %}
+
+<contact-form-{{ ai_gen_id }} class="ai-contact-form-{{ ai_gen_id }}" {{ block.shopify_attributes }}>
+  <div class="ai-contact-form__header-{{ ai_gen_id }}">
+    <h2 class="ai-contact-form__title-{{ ai_gen_id }}">{{ block.settings.title }}</h2>
+    <div class="ai-contact-form__description-{{ ai_gen_id }}">
+      {{ block.settings.description }}
+    </div>
+  </div>
+  {% assign form_id = block.id | default: section.id | prepend: 'ContactForm-' %}
+  {%- form 'contact', id: form_id, data-shopify-captcha: "true" -%}
+      <input
+      name="contact[id]"
+      type="hidden"
+      value="{{ form_id }}" />
+    <div class="ai-contact-form__form-{{ ai_gen_id }}">
+      <div class="ai-contact-form__field-group-{{ ai_gen_id }}" data-delay="0">
+        <label for="contact-name-{{ ai_gen_id }}" class="ai-contact-form__label-{{ ai_gen_id }}">
+          {{ block.settings.name_label }} <span class="ai-contact-form__required-{{ ai_gen_id }}">*</span>
+        </label>
+        <input
+          type="text"
+          id="contact-name-{{ ai_gen_id }}"
+          name="contact[name]"
+          class="ai-contact-form__input-{{ ai_gen_id }}"
+          value="{{ form.name }}"
+          required
+          aria-required="true"
+          placeholder="{{ block.settings.name_placeholder }}"
+        >
+      </div>
+
+      <div class="ai-contact-form__field-group-{{ ai_gen_id }}" data-delay="100">
+        <label for="contact-email-{{ ai_gen_id }}" class="ai-contact-form__label-{{ ai_gen_id }}">
+          {{ block.settings.email_label }} <span class="ai-contact-form__required-{{ ai_gen_id }}">*</span>
+        </label>
+        <input
+          type="email"
+          id="contact-email-{{ ai_gen_id }}"
+          name="contact[email]"
+          class="ai-contact-form__input-{{ ai_gen_id }}"
+          value="{{ form.email }}"
+          required
+          aria-required="true"
+          autocomplete="email"
+          placeholder="{{ block.settings.email_placeholder }}"
+          {% if form.errors %}
+            aria-invalid="true"
+            aria-describedby="contact-form-error-{{ ai_gen_id }}"
+          {% endif %}
+        >
+      </div>
+
+      <div class="ai-contact-form__field-group-{{ ai_gen_id }}" data-delay="200">
+        <label for="contact-phone-{{ ai_gen_id }}" class="ai-contact-form__label-{{ ai_gen_id }}">
+          {{ block.settings.phone_label }}
+        </label>
+        <input
+          type="tel"
+          id="contact-phone-{{ ai_gen_id }}"
+          name="contact[phone]"
+          class="ai-contact-form__input-{{ ai_gen_id }}"
+          value="{{ form.phone }}"
+          autocomplete="tel"
+          placeholder="{{ block.settings.phone_placeholder }}"
+        >
+      </div>
+
+      <div class="ai-contact-form__field-group-{{ ai_gen_id }}" data-delay="300">
+        <label class="ai-contact-form__label-{{ ai_gen_id }}">
+          {{ block.settings.collections_label }} <span class="ai-contact-form__required-{{ ai_gen_id }}">*</span>
+        </label>
+        <div class="ai-contact-form__collections-{{ ai_gen_id }}">
+          {% if block.settings.collections != blank %}
+            {% for collection in block.settings.collections %}
+              <div class="ai-contact-form__checkbox-wrapper-{{ ai_gen_id }}">
+                <input
+                  type="checkbox"
+                  id="collection-{{ collection.id }}-{{ ai_gen_id }}"
+                  name="contact[interested_in][]"
+                  value="{{ collection.title }}"
+                  class="ai-contact-form__checkbox-{{ ai_gen_id }}"
+                >
+                <label for="collection-{{ collection.id }}-{{ ai_gen_id }}" class="ai-contact-form__checkbox-label-{{ ai_gen_id }}">
+                  {{ collection.title }}
+                </label>
+              </div>
+            {% endfor %}
+          {% endif %}
+          
+          <div class="ai-contact-form__checkbox-wrapper-{{ ai_gen_id }}">
+            <input
+              type="checkbox"
+              id="other-checkbox-{{ ai_gen_id }}"
+              name="contact[interested_in][]"
+              value="Other"
+              class="ai-contact-form__checkbox-{{ ai_gen_id }} ai-contact-form__other-checkbox-{{ ai_gen_id }}"
+            >
+            <label for="other-checkbox-{{ ai_gen_id }}" class="ai-contact-form__checkbox-label-{{ ai_gen_id }}">
+              {{ block.settings.other_label }}
+            </label>
+          </div>
+        </div>
+        
+        <div class="ai-contact-form__other-input-{{ ai_gen_id }}" id="other-input-wrapper-{{ ai_gen_id }}">
+          <input
+            type="text"
+            id="other-input-{{ ai_gen_id }}"
+            name="contact[other_interest]"
+            class="ai-contact-form__input-{{ ai_gen_id }}"
+            placeholder="{{ block.settings.other_placeholder }}"
+          >
+        </div>
+      </div>
+
+      <div class="ai-contact-form__field-group-{{ ai_gen_id }}" data-delay="400">
+        <label for="contact-message-{{ ai_gen_id }}" class="ai-contact-form__label-{{ ai_gen_id }}">
+          {{ block.settings.message_label }}
+        </label>
+        <textarea
+          id="contact-message-{{ ai_gen_id }}"
+          name="contact[body]"
+          class="ai-contact-form__textarea-{{ ai_gen_id }}"
+          placeholder="{{ block.settings.message_placeholder }}"
+        >{{ form.body }}</textarea>
+      </div>
+
+
+      <div class="ai-contact-form__field-group-{{ ai_gen_id }}" data-delay="500">
+        <button type="submit" class="ai-contact-form__button-{{ ai_gen_id }}">
+          <span class="ai-contact-form__button-text-{{ ai_gen_id }}">{{ block.settings.button_text }}</span>
+        </button>
+      </div>
+
+      {%- if form.posted_successfully? -%}
+        <div class="ai-contact-form__success-{{ ai_gen_id }}">
+          {{ block.settings.success_message }}
+        </div>
+      {%- endif -%}
+
+      {%- if form.errors -%}
+        <div id="contact-form-error-{{ ai_gen_id }}" class="ai-contact-form__error-{{ ai_gen_id }}">
+          {{ form.errors.messages.email }}
+        </div>
+      {%- endif -%}
+    </div>
+  {%- endform -%}
+</contact-form-{{ ai_gen_id }}>
+
+<script>
+  (function() {
+    class ContactForm{{ ai_gen_id }} extends HTMLElement {
+      constructor() {
+        super();
+      }
+
+      connectedCallback() {
+        this.animateFields();
+        this.setupCheckboxValidation();
+        this.setupOtherOption();
+      }
+
+      animateFields() {
+        const fields = this.querySelectorAll('.ai-contact-form__field-group-{{ ai_gen_id }}');
+        
+        const observer = new IntersectionObserver((entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              const delay = entry.target.dataset.delay || 0;
+              setTimeout(() => {
+                entry.target.classList.add('animate-in');
+              }, delay);
+              observer.unobserve(entry.target);
+            }
+          });
+        }, {
+          threshold: 0.1
+        });
+
+        fields.forEach((field) => {
+          observer.observe(field);
+        });
+      }
+
+      setupCheckboxValidation() {
+        const form = this.querySelector('form');
+        const checkboxes = this.querySelectorAll('.ai-contact-form__checkbox-{{ ai_gen_id }}');
+        
+        // Use Shopify's official CAPTCHA protection method
+        if (window.Shopify && window.Shopify.captcha && window.Shopify.captcha.protect) {
+          window.Shopify.captcha.protect(form, () => {
+            console.log('CAPTCHA protection enabled for contact form');
+          });
+        }
+        
+        // Handle form submission with AJAX
+        form.addEventListener('submit', (e) => {
+          e.preventDefault(); 
+          
+          // Validate checkboxes if they exist
+          if (checkboxes.length > 0) {
+            const isChecked = Array.from(checkboxes).some(checkbox => checkbox.checked);
+            if (!isChecked) {
+              alert('Please select at least one option from "Interested in"');
+              return;
+            }
+          }
+          
+          // Submit form via AJAX
+          this.submitFormAjax(form);
+        });
+      }
+
+      submitFormAjax(form) {
+        const submitButton = form.querySelector('.ai-contact-form__button-{{ ai_gen_id }}');
+        const buttonText = submitButton.querySelector('.ai-contact-form__button-text-{{ ai_gen_id }}');
+        const originalText = buttonText.textContent;
+        
+        // Show loading state
+        buttonText.textContent = 'Sending...';
+        submitButton.disabled = true;
+        
+        // Remove existing messages
+        this.clearMessages();
+        
+        // Prepare form data
+        const formData = new FormData(form);
+        formData.append('form_type', 'contact');
+        formData.append('utf8', '✓');
+        
+        // Submit form via fetch
+        fetch('/contact', {
+          method: 'POST',
+          body: formData,
+          headers: {
+            'Accept': 'application/json, text/javascript, */*; q=0.01',
+            'X-Requested-With': 'XMLHttpRequest'
+          }
+        })
+        .then(response => {
+          if (response.ok) {
+            return response.text();
+          }
+          throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+        })
+        .then(responseText => {
+          // Check for success indicators in the response
+          if (responseText.includes('form-success') || 
+              responseText.includes('posted_successfully') || 
+              responseText.includes('thank') ||
+              responseText.includes('success')) {
+            this.showSuccessMessage();
+            form.reset();
+            // Reset other option if it was shown
+            const otherInputWrapper = this.querySelector('#other-input-wrapper-{{ ai_gen_id }}');
+            if (otherInputWrapper) {
+              otherInputWrapper.classList.remove('show');
+            }
+          } else if (responseText.includes('error') || responseText.includes('invalid')) {
+            // Try to extract error message
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(responseText, 'text/html');
+            const errorElement = doc.querySelector('.errors, .error, [class*="error"]');
+            const errorMessage = errorElement ? 
+              errorElement.textContent.trim() : 
+              'Please check your information and try again.';
+            this.showErrorMessage(errorMessage);
+          } else {
+            // Default to success if no clear error indicators
+            this.showSuccessMessage();
+            form.reset();
+          }
+        })
+        .catch(error => {
+          console.error('Form submission error:', error);
+          this.showErrorMessage('There was an error sending your message. Please try again.');
+        })
+        .finally(() => {
+          // Reset button state
+          buttonText.textContent = originalText;
+          submitButton.disabled = false;
+        });
+      }
+
+      setupOtherOption() {
+        const otherCheckbox = this.querySelector('.ai-contact-form__other-checkbox-{{ ai_gen_id }}');
+        const otherInputWrapper = this.querySelector('#other-input-wrapper-{{ ai_gen_id }}');
+        const otherInput = this.querySelector('#other-input-{{ ai_gen_id }}');
+
+        if (otherCheckbox && otherInputWrapper && otherInput) {
+          otherCheckbox.addEventListener('change', function() {
+            if (this.checked) {
+              otherInputWrapper.classList.add('show');
+              otherInput.focus();
+            } else {
+              otherInputWrapper.classList.remove('show');
+              otherInput.value = '';
+            }
+          });
+        }
+      }
+
+
+      clearMessages() {
+        const existingSuccess = this.querySelector('.ai-contact-form__success-{{ ai_gen_id }}');
+        const existingError = this.querySelector('.ai-contact-form__error-{{ ai_gen_id }}');
+        
+        if (existingSuccess) existingSuccess.remove();
+        if (existingError) existingError.remove();
+      }
+
+      showSuccessMessage() {
+        const form = this.querySelector('.ai-contact-form__form-{{ ai_gen_id }}');
+        const successDiv = document.createElement('div');
+        successDiv.className = 'ai-contact-form__success-{{ ai_gen_id }}';
+        successDiv.textContent = {{ block.settings.success_message | json }};
+        form.appendChild(successDiv);
+        
+        // Scroll to success message
+        successDiv.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+
+      showErrorMessage(message) {
+        const form = this.querySelector('.ai-contact-form__form-{{ ai_gen_id }}');
+        const errorDiv = document.createElement('div');
+        errorDiv.className = 'ai-contact-form__error-{{ ai_gen_id }}';
+        errorDiv.textContent = message;
+        form.appendChild(errorDiv);
+        
+        // Scroll to error message
+        errorDiv.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+    }
+
+    customElements.define('contact-form-{{ ai_gen_id }}', ContactForm{{ ai_gen_id }});
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Contact form",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Content"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Title",
+      "default": "Get In Touch"
+    },
+    {
+      "type": "textarea",
+      "id": "description",
+      "label": "Description",
+      "default": "At Jim Ray Company, we strive to merit our customers' business by providing quality products with on time deliveries. We believe in service and are dedicated to using our resources to handle customer needs.\n\nPlease send us a message below and we will get back with you as soon as possible."
+    },
+    {
+      "type": "text",
+      "id": "name_label",
+      "label": "Name field label",
+      "default": "Full Name"
+    },
+    {
+      "type": "text",
+      "id": "name_placeholder",
+      "label": "Name placeholder"
+    },
+    {
+      "type": "text",
+      "id": "email_label",
+      "label": "Email field label",
+      "default": "Email"
+    },
+    {
+      "type": "text",
+      "id": "email_placeholder",
+      "label": "Email placeholder"
+    },
+    {
+      "type": "text",
+      "id": "phone_label",
+      "label": "Phone field label",
+      "default": "Phone"
+    },
+    {
+      "type": "text",
+      "id": "phone_placeholder",
+      "label": "Phone placeholder"
+    },
+    {
+      "type": "text",
+      "id": "collections_label",
+      "label": "Collections field label",
+      "default": "Interested in (check all that apply)"
+    },
+    {
+      "type": "collection_list",
+      "id": "collections",
+      "label": "Collections",
+      "limit": 10
+    },
+    {
+      "type": "text",
+      "id": "other_label",
+      "label": "Other option label",
+      "default": "Other"
+    },
+    {
+      "type": "text",
+      "id": "other_placeholder",
+      "label": "Other option placeholder",
+      "default": "Please specify..."
+    },
+    {
+      "type": "text",
+      "id": "message_label",
+      "label": "Message field label",
+      "default": "Questions or Comments"
+    },
+    {
+      "type": "text",
+      "id": "message_placeholder",
+      "label": "Message placeholder"
+    },
+    {
+      "type": "text",
+      "id": "button_text",
+      "label": "Button text",
+      "default": "Send Message"
+    },
+    {
+      "type": "text",
+      "id": "success_message",
+      "label": "Success message",
+      "default": "Thank you for contacting us! We'll get back to you as soon as possible."
+    },
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "range",
+      "id": "desktop_width_percent",
+      "label": "Desktop width",
+      "min": 50,
+      "max": 100,
+      "step": 5,
+      "unit": "%",
+      "default": 100
+    },
+    {
+      "type": "range",
+      "id": "padding",
+      "label": "Padding",
+      "min": 0,
+      "max": 80,
+      "step": 5,
+      "unit": "px",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "border_radius",
+      "label": "Border radius",
+      "min": 0,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "default": 12
+    },
+    {
+      "type": "header",
+      "content": "Typography"
+    },
+    {
+      "type": "range",
+      "id": "title_size",
+      "label": "Title size",
+      "min": 20,
+      "max": 60,
+      "step": 2,
+      "unit": "px",
+      "default": 36
+    },
+    {
+      "type": "range",
+      "id": "description_size",
+      "label": "Description size",
+      "min": 12,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "default": 16
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text",
+      "default": "#333333"
+    },
+    {
+      "type": "color",
+      "id": "primary_color",
+      "label": "Primary",
+      "default": "#9e0608"
+    },
+    {
+      "type": "color",
+      "id": "input_background",
+      "label": "Input background",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "input_border_color",
+      "label": "Input border",
+      "default": "#e6e6e6"
+    },
+    {
+      "type": "color",
+      "id": "button_color",
+      "label": "Button background",
+      "default": "#7b0002"
+    },
+    {
+      "type": "color",
+      "id": "button_text_color",
+      "label": "Button text",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "button_hover_color",
+      "label": "Button hover",
+      "default": "#9e0608"
+    },
+    {
+      "type": "color",
+      "id": "success_color",
+      "label": "Success",
+      "default": "#008060"
+    },
+    {
+      "type": "color",
+      "id": "error_color",
+      "label": "Error",
+      "default": "#D82C0D"
+    },
+    {
+      "type": "header",
+      "content": "Input style"
+    },
+    {
+      "type": "range",
+      "id": "input_border_radius",
+      "label": "Input border radius",
+      "min": 0,
+      "max": 20,
+      "step": 2,
+      "unit": "px",
+      "default": 8
+    },
+    {
+      "type": "range",
+      "id": "button_border_radius",
+      "label": "Button border radius",
+      "min": 0,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "default": 8
+    }
+  ],
+  "presets": [
+    {
+      "name": "Contact form"
+    }
+  ]
+}
+{% endschema %}

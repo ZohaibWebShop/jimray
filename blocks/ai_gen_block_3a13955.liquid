@@ -167,7 +167,7 @@
   }
 
   .ai-product-card-{{ ai_gen_id }}:hover .ai-product-image-{{ ai_gen_id }} {
-    transform: scale({{ block.settings.image_zoom_scale }});
+    transform: scale(1.03);
     opacity: {{ block.settings.image_hover_opacity }};
   }
 
@@ -210,11 +210,96 @@
     font-size: {{ block.settings.description_size }}px;
     color: {{ block.settings.description_color }};
     line-height: 1.6;
-    margin: 0;
+    margin: 0 0 {{ block.settings.price_margin }}px 0;
     display: -webkit-box;
     -webkit-line-clamp: {{ block.settings.description_lines }};
     -webkit-box-orient: vertical;
     overflow: hidden;
+  }
+
+  .ai-product-price-{{ ai_gen_id }} {
+    font-size: {{ block.settings.price_size }}px;
+    font-weight: {{ block.settings.price_weight }};
+    color: {{ block.settings.price_color }};
+    margin: 0 0 {{ block.settings.button_margin }}px 0;
+    line-height: 1.2;
+  }
+
+  .ai-product-price-compare-{{ ai_gen_id }} {
+    font-size: {{ block.settings.price_size | times: 0.85 }}px;
+    color: {{ block.settings.price_compare_color }};
+    text-decoration: line-through;
+    margin-right: 8px;
+  }
+
+  .ai-product-price-sale-{{ ai_gen_id }} {
+    color: {{ block.settings.price_sale_color }};
+  }
+
+  .ai-product-buy-button-{{ ai_gen_id }} {
+    display: inline-block;
+    padding: {{ block.settings.buy_button_padding_vertical }}px {{ block.settings.buy_button_padding_horizontal }}px;
+    background-color: {{ block.settings.buy_button_background }};
+    color: {{ block.settings.buy_button_text_color }};
+    text-decoration: none;
+    font-size: {{ block.settings.buy_button_font_size }}px;
+    font-weight: {{ block.settings.buy_button_font_weight }};
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    clip-path: polygon(5% 0, 100% 0, 100% 75%, 95% 100%, 0 100%, 0 25%);
+    z-index: 1;
+  }
+
+  .ai-product-buy-button-{{ ai_gen_id }}:hover {
+    background-color: {{ block.settings.buy_button_hover_background }};
+    color: {{ block.settings.buy_button_hover_text_color }};
+    transform: translateY(-2px) scale(1.05);
+    box-shadow: 0 8px 20px {{ block.settings.buy_button_background | color_modify: 'alpha', 0.2 }};
+  }
+
+  .ai-product-buy-button-{{ ai_gen_id }}::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.5s ease;
+  }
+
+  .ai-product-buy-button-{{ ai_gen_id }}:hover::before {
+    left: 100%;
+  }
+
+  .ai-product-buy-button-{{ ai_gen_id }}:disabled {
+    background-color: {{ block.settings.buy_button_sold_out_background }};
+    color: {{ block.settings.buy_button_sold_out_text_color }};
+    cursor: not-allowed;
+    opacity: 0.7;
+  }
+
+  .ai-product-buy-button-{{ ai_gen_id }}:disabled:hover {
+    transform: none;
+    box-shadow: none;
+    background-color: {{ block.settings.buy_button_sold_out_background }};
+    color: {{ block.settings.buy_button_sold_out_text_color }};
+  }
+
+  .ai-product-buy-button-{{ ai_gen_id }}:disabled::before {
+    display: none;
+  }
+
+  .ai-product-card-actions-{{ ai_gen_id }} {
+    display: flex;
+    flex-direction: column;
+    gap: {{ block.settings.actions_gap }}px;
+    margin-top: auto;
   }
 
   .ai-product-empty-state-{{ ai_gen_id }} {
@@ -308,6 +393,33 @@
                 {{ product.metafields.custom.short_description }}
               </p>
             {% endif %}
+            
+            {% if block.settings.show_price %}
+              <div class="ai-product-price-{{ ai_gen_id }}">
+                {% if product.compare_at_price > product.price %}
+                  <span class="ai-product-price-compare-{{ ai_gen_id }}">{{ product.compare_at_price | money }}</span>
+                {% endif %}
+                <span class="{% if product.compare_at_price > product.price %}ai-product-price-sale-{{ ai_gen_id }}{% endif %}">
+                  {{ product.price | money }}
+                </span>
+              </div>
+            {% endif %}
+            
+            {% if block.settings.show_buy_button %}
+              <div class="ai-product-card-actions-{{ ai_gen_id }}">
+                <button 
+                  class="ai-product-buy-button-{{ ai_gen_id }}" 
+                  onclick="addToCart('{{ product.selected_or_first_available_variant.id }}', '{{ product.title | escape }}', event)"
+                  {% unless product.available %}disabled{% endunless %}
+                >
+                  {% if product.available %}
+                    {{ block.settings.buy_button_text }}
+                  {% else %}
+                    Sold Out
+                  {% endif %}
+                </button>
+              </div>
+            {% endif %}
           </div>
         </a>
       {% endfor %}
@@ -347,6 +459,57 @@
 
     customElements.define('product-grid-{{ ai_gen_id }}', ProductGrid{{ ai_gen_id }});
   })();
+
+  // Add to cart functionality
+  window.addToCart = function(variantId, productTitle, event) {
+    event.preventDefault();
+    event.stopPropagation();
+    
+    const button = event.target;
+    const originalText = button.textContent;
+    
+    // Update button state
+    button.textContent = 'Adding...';
+    button.disabled = true;
+    
+    // Add to cart
+    fetch('/cart/add.js', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        id: variantId,
+        quantity: 1
+      })
+    })
+    .then(response => response.json())
+    .then(data => {
+      // Success feedback
+      button.textContent = 'Added!';
+      button.style.backgroundColor = '#28a745';
+      
+      // Update cart count if cart drawer exists
+      if (window.updateCartCount) {
+        window.updateCartCount();
+      }
+      
+      // Reset button after delay
+      setTimeout(() => {
+        button.textContent = originalText;
+        button.disabled = false;
+        button.style.backgroundColor = '';
+      }, 2000);
+    })
+    .catch(error => {
+      console.error('Error adding to cart:', error);
+      button.textContent = 'Error';
+      setTimeout(() => {
+        button.textContent = originalText;
+        button.disabled = false;
+      }, 2000);
+    });
+  };
 </script>
 
 {% schema %}
@@ -846,6 +1009,174 @@
       "max": 5,
       "step": 1,
       "default": 2
+    },
+    {
+      "type": "header",
+      "content": "Product pricing"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_price",
+      "label": "Show product price",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "price_size",
+      "label": "Price size",
+      "min": 12,
+      "max": 24,
+      "step": 2,
+      "unit": "px",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "price_weight",
+      "label": "Price weight",
+      "min": 400,
+      "max": 700,
+      "step": 100,
+      "default": 600
+    },
+    {
+      "type": "color",
+      "id": "price_color",
+      "label": "Price color",
+      "default": "#333333"
+    },
+    {
+      "type": "color",
+      "id": "price_compare_color",
+      "label": "Compare price color",
+      "default": "#999999"
+    },
+    {
+      "type": "color",
+      "id": "price_sale_color",
+      "label": "Sale price color",
+      "default": "#e74c3c"
+    },
+    {
+      "type": "range",
+      "id": "price_margin",
+      "label": "Price bottom margin",
+      "min": 0,
+      "max": 20,
+      "step": 2,
+      "unit": "px",
+      "default": 8
+    },
+    {
+      "type": "header",
+      "content": "Buy Now button"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_buy_button",
+      "label": "Show Buy Now button",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "buy_button_text",
+      "label": "Button text",
+      "default": "BUY NOW"
+    },
+    {
+      "type": "range",
+      "id": "buy_button_font_size",
+      "label": "Font size",
+      "min": 10,
+      "max": 18,
+      "step": 2,
+      "unit": "px",
+      "default": 12
+    },
+    {
+      "type": "range",
+      "id": "buy_button_font_weight",
+      "label": "Font weight",
+      "min": 400,
+      "max": 700,
+      "step": 100,
+      "default": 700
+    },
+    {
+      "type": "range",
+      "id": "buy_button_padding_vertical",
+      "label": "Vertical padding",
+      "min": 6,
+      "max": 16,
+      "step": 2,
+      "unit": "px",
+      "default": 8
+    },
+    {
+      "type": "range",
+      "id": "buy_button_padding_horizontal",
+      "label": "Horizontal padding",
+      "min": 12,
+      "max": 30,
+      "step": 2,
+      "unit": "px",
+      "default": 16
+    },
+    {
+      "type": "color",
+      "id": "buy_button_background",
+      "label": "Background",
+      "default": "#7b0002"
+    },
+    {
+      "type": "color",
+      "id": "buy_button_text_color",
+      "label": "Text color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "buy_button_hover_background",
+      "label": "Hover background",
+      "default": "#5a0001"
+    },
+    {
+      "type": "color",
+      "id": "buy_button_hover_text_color",
+      "label": "Hover text color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "buy_button_sold_out_background",
+      "label": "Sold out background",
+      "default": "#cccccc"
+    },
+    {
+      "type": "color",
+      "id": "buy_button_sold_out_text_color",
+      "label": "Sold out text color",
+      "default": "#666666"
+    },
+    {
+      "type": "range",
+      "id": "button_margin",
+      "label": "Button top margin",
+      "min": 0,
+      "max": 20,
+      "step": 2,
+      "unit": "px",
+      "default": 8
+    },
+    {
+      "type": "range",
+      "id": "actions_gap",
+      "label": "Actions gap",
+      "min": 0,
+      "max": 15,
+      "step": 1,
+      "unit": "px",
+      "default": 8
     },
     {
       "type": "header",

@@ -1,0 +1,13 @@
+{% comment %}
+  Shopify's official CAPTCHA implementation
+  This snippet is now deprecated since we use data-shopify-captcha attribute
+  and window.Shopify.captcha.protect method directly in forms
+{% endcomment %}
+
+{% comment %}
+  CAPTCHA is now handled automatically by Shopify when using:
+  1. data-shopify-captcha="true" attribute on the form
+  2. window.Shopify.captcha.protect(form, callback) method
+  
+  No additional rendering is needed as Shopify handles it internally
+{% endcomment %}

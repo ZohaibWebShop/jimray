@@ -60,11 +60,18 @@
   endcapture
 
   capture actions
-    echo '<div class="header-actions">'
-    echo '<a href="#" class="header-actions__button button button--primary">'
-    echo 'Free Quote'
-    echo '</a>'
-    echo '</div>'
+    if section.settings.show_free_quote_button
+      echo '<div class="header-actions">'
+      echo '<!-- Desktop Free Quote Button -->'
+      echo '<a href="' | append: section.settings.free_quote_button_url | append: '" class="header-actions__button header-actions__button--desktop button button--primary">'
+      echo section.settings.free_quote_button_text
+      echo '</a>'
+      echo '<!-- Mobile Free Quote Button -->'
+      echo '<a href="' | append: section.settings.free_quote_button_url | append: '" class="header-actions__button header-actions__button--mobile button button--primary">'
+      echo section.settings.free_quote_button_text
+      echo '</a>'
+      echo '</div>'
+    endif
   endcapture
 
   if shop.customer_accounts_enabled
@@ -777,6 +784,11 @@
         grid-area: center;
       }
 
+      /* Menu drawer icon should be on leftA */
+      .header__icon--menu {
+        grid-area: leftA;
+      }
+
       &:not(:has(header-actions)) .search-action {
         grid-area: leftB;
       }
@@ -789,8 +801,30 @@
         grid-area: leftB;
       }
 
+      /* Free Quote button should be on rightB (far right) */
       header-actions {
         grid-area: rightB;
+        justify-self: end;
+        display: flex;
+        align-items: center;
+      }
+      
+      /* Ensure mobile button is properly positioned */
+      .header-actions__button--mobile {
+        margin-left: auto;
+      }
+
+      /* Ensure proper mobile layout: menu icon (left) + logo (center) + Free Quote (right) */
+      .header__column--left {
+        display: contents;
+      }
+
+      .header__column--center {
+        display: contents;
+      }
+
+      .header__column--right {
+        display: contents;
       }
     }
   }
@@ -812,6 +846,11 @@
       grid-area: center;
     }
 
+    /* Menu drawer icon should be on leftA */
+    .header__icon--menu {
+      grid-area: leftA;
+    }
+
     &:not(:has(header-actions)) .search-action {
       grid-area: leftB;
     }
@@ -824,8 +863,30 @@
       grid-area: leftB;
     }
 
+    /* Free Quote button should be on rightB (far right) */
     header-actions {
       grid-area: rightB;
+      justify-self: end;
+      display: flex;
+      align-items: center;
+    }
+    
+    /* Ensure mobile button is properly positioned */
+    .header-actions__button--mobile {
+      margin-left: auto;
+    }
+
+    /* Ensure proper mobile layout: menu icon (left) + logo (center) + Free Quote (right) */
+    .header__column--left {
+      display: contents;
+    }
+
+    .header__column--center {
+      display: contents;
+    }
+
+    .header__column--right {
+      display: contents;
     }
   }
 
@@ -866,30 +927,60 @@
 
   /* Header action button styles */
   .header-actions__button {
-    padding: var(--padding-xs) var(--padding-lg);
-    --font-size-sm: 16px;
-    font-size: var(--font-size-sm);
+    padding: 14px 15px;
+    font-size: 16px;
     font-weight: 700;
     line-height: 22px;
     text-decoration: none;
     text-transform: uppercase;
     font-family: 'Plus Jakarta Sans', sans-serif;
-    background: #7b0002;
-    color: #ffffff;
+    background: #7B0002;
+    color: #FFFFFF;
     clip-path: polygon(10% 0, 100% 0, 100% 75%, 90% 100%, 0 100%, 0 25%);
     transition: all var(--animation-speed) var(--animation-easing);
     white-space: nowrap;
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    padding: 14px 15px;
     border: none;
     border-radius: 0px;
   }
 
+  /* Desktop Free Quote Button - hidden on mobile */
+  .header-actions__button--desktop {
+    display: inline-flex;
+  }
+
+  .header-actions__button--mobile {
+    display: none;
+  }
+
+  /* Mobile-specific styles for Free Quote button */
+  @media screen and (max-width: 749px) {
+    /* Hide desktop button on mobile */
+    .header-actions__button--desktop {
+      display: none;
+    }
+    
+    /* Show mobile button on mobile */
+    .header-actions__button--mobile {
+      display: inline-flex;
+      padding: 8px 10px;
+      font-size: 12px;
+      line-height: 16px;
+      font-weight: 600;
+    }
+    
+    .header-actions {
+      margin-left: auto;
+      justify-self: end;
+    }
+  }
+
   .header-actions__button:hover {
     transform: translateY(-1px);
-    background: #5a0001;
+    background: #5A0001;
+    color: #ffffff;
     box-shadow: 0 4px 12px rgba(123, 0, 2, 0.3);
   }
 
@@ -1543,6 +1634,27 @@
       ],
       "default": "none",
       "visible_if": "{{ section.settings.actions_display_style == 'text' }}"
+    },
+    {
+      "type": "header",
+      "content": "Free Quote Button"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_free_quote_button",
+      "label": "Show Free Quote button",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "free_quote_button_text",
+      "label": "Button text",
+      "default": "Free Quote"
+    },
+    {
+      "type": "url",
+      "id": "free_quote_button_url",
+      "label": "Button URL"
     },
     {
       "type": "header",
