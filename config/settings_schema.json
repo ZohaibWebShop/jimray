@@ -2284,5 +2284,20 @@
         "default": "equal-width-buttons"
       }
     ]
+  },
+  {
+    "name": "Quote request",
+    "settings": [
+      {
+        "type": "text",
+        "id": "quote_api_base_url",
+        "label": "Quote API base URL"
+      },
+      {
+        "type": "text",
+        "id": "quote_api_secret",
+        "label": "Quote API secret"
+      }
+    ]
   }
 ]

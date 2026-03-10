@@ -1,0 +1,129 @@
+/* Print-specific styles for store quote details */
+
+@page {
+  size: A4;
+  margin: 0;
+}
+
+@media print {
+  /* Hide non-printable elements */
+  .header,
+  .footer,
+  .shopify-section-header,
+  .shopify-section-footer,
+  .announcement-bar,
+  button,
+  .button,
+  nav,
+  .breadcrumb,
+  [data-print-quote],
+  a[href="/pages/quotes"] {
+    display: none !important;
+  }
+
+  /* Reset body and container */
+  body {
+    margin: 0;
+    padding: 0;
+    background: white !important;
+  }
+
+  .page-width {
+    max-width: 100% !important;
+    padding: 40px !important;
+  }
+
+  /* Print header with logo and brand colors */
+  [data-quote-details]::before {
+    content: '';
+    display: block;
+    background: #a96945;
+    color: white;
+    padding: 24px 30px;
+    margin: -40px -40px 30px -40px;
+    background-image: url('https://pexplanters.com/cdn/shop/files/Logo_primary_white.png?v=1735074839&width=500');
+    background-repeat: no-repeat;
+    background-position: left center;
+    background-size: auto 32px;
+    min-height: 60px;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  /* Quote card styling */
+  [data-quote-details] > div {
+    page-break-inside: avoid;
+  }
+
+  /* Table styling for print */
+  table {
+    width: 100% !important;
+    border-collapse: collapse !important;
+    page-break-inside: avoid;
+  }
+
+  table thead th {
+    padding: 10px 8px !important;
+    border-bottom: 2px solid #e5e7eb !important;
+    color: #6b7280 !important;
+    font-size: 12px !important;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    font-weight: 600;
+  }
+
+  table tbody tr {
+    border-bottom: 1px solid #f3f4f6;
+    page-break-inside: avoid;
+  }
+
+  table tbody td {
+    padding: 12px 8px !important;
+    vertical-align: top;
+  }
+
+  /* Images */
+  img {
+    max-width: 100px !important;
+    height: auto !important;
+    page-break-inside: avoid;
+  }
+
+  /* Print footer */
+  [data-quote-details]::after {
+    content: 'PexPlanters - Thank you for your quote request';
+    display: block;
+    margin-top: 30px;
+    padding-top: 20px;
+    border-top: 1px solid #e5e7eb;
+    text-align: center;
+    color: #6b7280;
+    font-size: 12px;
+  }
+
+  /* Ensure colors print */
+  * {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  /* Page breaks */
+  h1, h2, h3 {
+    page-break-after: avoid;
+  }
+
+  /* Accent bar color */
+  [style*="background:#95c45b"],
+  [style*="background: #95c45b"] {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  /* Primary header color */
+  [style*="background:#b26e48"],
+  [style*="background: #b26e48"] {
+    background: #a96945 !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+}

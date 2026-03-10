@@ -6,10 +6,18 @@
   </div>
 {% endcapture %}
 
-<cart-items-component
-  class="cart-items-component"
-  data-section-id="{{ section.id }}"
+<div
+  data-quote-request-config
+  data-api-base-url="{{ settings.quote_api_base_url }}"
+  data-secret="{{ settings.quote_api_secret }}"
+  data-customer-id="{% if customer %}{{ customer.id }}{% endif %}"
+  data-customer-email="{% if customer %}{{ customer.email }}{% endif %}"
+  data-customer-name="{% if customer %}{{ customer.name }}{% endif %}"
 >
+  <cart-items-component
+    class="cart-items-component"
+    data-section-id="{{ section.id }}"
+  >
   <template id="empty-cart-template">
     <div class="section-background color-{{ section.settings.color_scheme }}"></div>
     <div
@@ -58,6 +66,7 @@
   </div>
   {% # theme-check-enable UniqueStaticBlockId %}
 </cart-items-component>
+</div>
 
 {% stylesheet %}
   .cart-page {
