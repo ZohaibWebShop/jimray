@@ -1,0 +1,692 @@
+{% comment %}
+  Public quote viewer - displays quote details using secure token from URL
+{% endcomment %}
+
+<quote-viewer class="quote-viewer-container">
+  <div class="quote-viewer-loading" data-loading>
+    <div class="spinner"></div>
+    <p>Loading your quote...</p>
+  </div>
+
+  <div class="quote-viewer-error" data-error style="display: none;">
+    <div class="error-icon">⚠️</div>
+    <h2>Quote Not Found</h2>
+    <p data-error-message>We couldn't find the quote you're looking for. The link may be invalid or expired.</p>
+    <a href="{{ routes.root_url }}" class="button">Return to Home</a>
+  </div>
+
+  <div class="quote-viewer-content" data-content style="display: none;">
+    <div class="quote-header">
+      <div class="quote-header-left">
+        <h1>Quote Request <span data-quote-number></span></h1>
+        <div class="quote-status" data-quote-status></div>
+      </div>
+      <button class="quote-print-btn" data-download-btn>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 20px; height: 20px; margin-right: 8px;">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+          <polyline points="7 10 12 15 17 10"/>
+          <line x1="12" y1="3" x2="12" y2="15"/>
+        </svg>
+        Download Quote
+      </button>
+    </div>
+
+    <div class="quote-details">
+      <div class="quote-section">
+        <h2>Customer Information</h2>
+        <div class="info-grid">
+          <div class="info-item">
+            <span class="info-label">Name:</span>
+            <span class="info-value" data-customer-name></span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Email:</span>
+            <span class="info-value" data-customer-email></span>
+          </div>
+          <div class="info-item" data-customer-phone-wrapper style="display: none;">
+            <span class="info-label">Phone:</span>
+            <span class="info-value" data-customer-phone></span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Submitted:</span>
+            <span class="info-value" data-created-at></span>
+          </div>
+        </div>
+      </div>
+
+      <div class="quote-section" data-note-section style="display: none;">
+        <h2>Notes</h2>
+        <div class="quote-note" data-note></div>
+      </div>
+
+      <div class="quote-section">
+        <h2>Requested Items</h2>
+        <div class="quote-items" data-items></div>
+      </div>
+    </div>
+
+    <div class="quote-actions">
+      <p class="quote-help-text">Our team will review your quote request and get back to you shortly.</p>
+    </div>
+  </div>
+</quote-viewer>
+
+<script>
+  (function() {
+    class QuoteViewer extends HTMLElement {
+      connectedCallback() {
+        this.currentQuote = null;
+        this.loadQuote();
+        
+        const downloadBtn = this.querySelector('[data-download-btn]');
+        if (downloadBtn) {
+          downloadBtn.addEventListener('click', () => this.downloadPDF());
+        }
+      }
+
+      async loadQuote() {
+        const loadingEl = this.querySelector('[data-loading]');
+        const errorEl = this.querySelector('[data-error]');
+        const contentEl = this.querySelector('[data-content]');
+
+        try {
+          // Get token from URL
+          const urlParams = new URLSearchParams(window.location.search);
+          const token = urlParams.get('token');
+
+          if (!token) {
+            throw new Error('No token provided in URL. Please use the link from your email.');
+          }
+
+          // Get API config from theme settings
+          const apiBaseUrl = '{{ settings.quote_api_base_url }}';
+          
+          if (!apiBaseUrl || apiBaseUrl.trim() === '') {
+            throw new Error('Quote API not configured in theme settings. Please contact support.');
+          }
+
+          // Fetch quote data
+          const response = await fetch(`${apiBaseUrl}/api/quotes/view/${token}`);
+          
+          if (!response.ok) {
+            throw new Error('Quote not found or link has expired');
+          }
+
+          const data = await response.json();
+          const quote = data.quote;
+          this.currentQuote = quote;
+          
+          if (!quote) {
+            throw new Error('Invalid quote data received');
+          }
+
+          // Hide loading, show content
+          loadingEl.style.display = 'none';
+          contentEl.style.display = 'block';
+
+          // Populate quote data
+          this.populateQuote(quote);
+
+        } catch (error) {
+          loadingEl.style.display = 'none';
+          errorEl.style.display = 'block';
+          
+          const errorMessageEl = errorEl.querySelector('[data-error-message]');
+          if (errorMessageEl) {
+            errorMessageEl.textContent = error.message || 'Unable to load quote. Please try again later.';
+          }
+        }
+      }
+
+      async downloadPDF() {
+        const quote = this.currentQuote;
+        if (!quote) return;
+
+        const downloadBtn = this.querySelector('[data-download-btn]');
+        const originalText = downloadBtn.innerHTML;
+        downloadBtn.innerHTML = '<div class="spinner" style="width: 20px; height: 20px; margin: 0; border-width: 2px;"></div> Generating...';
+        downloadBtn.disabled = true;
+
+        const formatNumber = (num) => new Intl.NumberFormat('en-US').format(num);
+        const formatPrice = (price) => new Intl.NumberFormat('en-US', {
+          style: 'currency',
+          currency: 'USD',
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2
+        }).format(price);
+
+        const itemRows = (quote.items || [])
+          .map((it, idx) => {
+            const title = `${it.title || ''}${it.variantTitle ? ` — ${it.variantTitle}` : ''}`;
+            const sku = it.sku ? String(it.sku) : '';
+            const price = it.price != null && it.price !== '' ? Number(it.price) : null;
+            const priceText = price != null && !Number.isNaN(price) ? formatPrice(price) : '';
+            const lineTotal = price != null && !Number.isNaN(price) ? price * it.quantity : null;
+            const lineTotalText = lineTotal != null ? formatPrice(lineTotal) : '';
+            const bgColor = idx % 2 === 0 ? '#ffffff' : '#f9f9f9';
+
+            return `
+              <tr style="background:${bgColor};">
+                <td style="padding:12px 8px; border-bottom:1px solid #eee;">${title}</td>
+                <td style="padding:12px 8px; border-bottom:1px solid #eee; text-align:center;">${sku}</td>
+                <td style="padding:12px 8px; border-bottom:1px solid #eee; text-align:center;">${priceText}</td>
+                <td style="padding:12px 8px; border-bottom:1px solid #eee; text-align:center;">${formatNumber(it.quantity)}</td>
+                <td style="padding:12px 8px; border-bottom:1px solid #eee; text-align:right; font-weight:600;">${lineTotalText}</td>
+              </tr>
+            `;
+          })
+          .join('');
+
+        const submittedAt = new Date(quote.createdAt).toLocaleString();
+        const totalQuantity = formatNumber((quote.items || []).reduce((sum, item) => sum + (Number(item.quantity) || 0), 0));
+        const totalPrice = formatPrice((quote.items || []).reduce((sum, item) => {
+          const qty = Number(item.quantity) || 0;
+          const unitPrice = item.price != null && item.price !== '' ? Number(item.price) : 0;
+          return sum + (Number.isNaN(unitPrice) ? 0 : unitPrice * qty);
+        }, 0));
+
+        const htmlContent = `
+          <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; line-height: 1.6; color: #333; max-width: 900px; margin: 0 auto;">
+            <div style="background: linear-gradient(135deg, #7b0303 0%, #600202 100%); color: white; padding: 30px; border-radius: 8px 8px 0 0; margin-bottom: 0; display: flex; justify-content: space-between; align-items: center;">
+              <div>
+                <h1 style="font-size: 28px; margin-bottom: 8px; margin-top: 0; color: #ffffff;">Quote Request</h1>
+                <p style="opacity: 0.95; font-size: 14px; margin: 0; color: #ffffff;">Quote #QT-${quote.quoteNumber}</p>
+              </div>
+              <img src="https://cdn.shopify.com/s/files/1/0623/8794/5569/files/logo_-_white.png?v=1773251086" alt="Jim Ray" style="height: 50px; width: auto; max-width: 220px; object-fit: contain; display: block;" />
+            </div>
+            <div style="height: 6px; background: #ececec; margin-bottom: 30px;"></div>
+
+            <div style="background: #f9f9f9; padding: 20px; border-radius: 6px; margin-bottom: 30px; border: 1px solid #e0e0e0;">
+              <h2 style="font-size: 16px; color: #7b0303; margin-bottom: 12px; margin-top: 0; text-transform: uppercase; letter-spacing: 0.5px;">Quote Information</h2>
+              <div style="display: flex; margin-bottom: 8px;">
+                <div style="font-weight: 600; min-width: 140px; color: #666;">Quote #:</div>
+                <div style="color: #333;">QT-${quote.quoteNumber}</div>
+              </div>
+              <div style="display: flex; margin-bottom: 8px;">
+                <div style="font-weight: 600; min-width: 140px; color: #666;">Date Submitted:</div>
+                <div style="color: #333;">${submittedAt}</div>
+              </div>
+              <div style="display: flex; margin-bottom: 8px;">
+                <div style="font-weight: 600; min-width: 140px; color: #666;">Status:</div>
+                <div style="color: #333;">${quote.status || 'Pending'}</div>
+              </div>
+              ${quote.note ? `
+              <div style="display: flex; margin-bottom: 8px;">
+                <div style="font-weight: 600; min-width: 140px; color: #666;">Notes:</div>
+                <div style="color: #333;">${quote.note}</div>
+              </div>
+              ` : ''}
+            </div>
+
+            <div style="background: #f9f9f9; padding: 20px; border-radius: 6px; margin-bottom: 30px; border: 1px solid #e0e0e0;">
+              <h2 style="font-size: 16px; color: #7b0303; margin-bottom: 12px; margin-top: 0; text-transform: uppercase; letter-spacing: 0.5px;">Customer Information</h2>
+              <div style="display: flex; margin-bottom: 8px;">
+                <div style="font-weight: 600; min-width: 140px; color: #666;">Customer ID:</div>
+                <div style="color: #333;">${quote.shopifyCustomerId || 'Guest'}</div>
+              </div>
+              <div style="display: flex; margin-bottom: 8px;">
+                <div style="font-weight: 600; min-width: 140px; color: #666;">Email:</div>
+                <div style="color: #333;">${quote.customerEmail || 'N/A'}</div>
+              </div>
+              ${quote.customerName ? `
+              <div style="display: flex; margin-bottom: 8px;">
+                <div style="font-weight: 600; min-width: 140px; color: #666;">Name:</div>
+                <div style="color: #333;">${quote.customerName}</div>
+              </div>
+              ` : ''}
+            </div>
+
+            <h2 style="margin-bottom: 16px; color: #7b0303; font-size: 18px; margin-top: 0;">Items Requested</h2>
+            <table style="width: 100%; border-collapse: collapse; margin-bottom: 30px; border: 1px solid #ddd; border-radius: 6px; overflow: hidden;">
+              <thead style="background: #7b0303; color: white;">
+                <tr>
+                  <th style="padding: 14px 8px; text-align: left; font-weight: 600; font-size: 14px; text-transform: uppercase; letter-spacing: 0.5px;">Product</th>
+                  <th style="padding: 14px 8px; text-align: center; font-weight: 600; font-size: 14px; text-transform: uppercase; letter-spacing: 0.5px;">SKU</th>
+                  <th style="padding: 14px 8px; text-align: center; font-weight: 600; font-size: 14px; text-transform: uppercase; letter-spacing: 0.5px;">Unit Price</th>
+                  <th style="padding: 14px 8px; text-align: center; font-weight: 600; font-size: 14px; text-transform: uppercase; letter-spacing: 0.5px;">Quantity</th>
+                  <th style="padding: 14px 8px; text-align: right; font-weight: 600; font-size: 14px; text-transform: uppercase; letter-spacing: 0.5px;">Line Total</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${itemRows}
+              </tbody>
+            </table>
+
+            <div style="background: #f0f0f0; padding: 15px; border-radius: 6px; margin-bottom: 30px; text-align: right;">
+              <div style="font-weight: 600; font-size: 16px; color: #7b0303;">Total Quantity: ${totalQuantity}</div>
+              <div style="font-weight: 600; font-size: 18px; color: #7b0303; margin-top: 5px;">Total Price: ${totalPrice}</div>
+            </div>
+
+            <div style="text-align: center; padding-top: 30px; border-top: 2px solid #ececec; color: #666; font-size: 13px;">
+              <p style="margin-bottom: 8px;"><strong>Thank you for your quote request!</strong></p>
+              <p style="margin-bottom: 8px;">We will review your request and contact you shortly. If you have any questions, feel free to reach out to us at <b>info@jimray.com</b>.</p>
+              <p style="margin-top: 16px; color: #7b0303; font-weight: 600; margin-bottom: 0;">Jim Ray</p>
+            </div>
+          </div>
+        `;
+
+        const doGenerate = () => {
+          const element = document.createElement('div');
+          element.innerHTML = htmlContent;
+          element.style.padding = '20px';
+
+          const opt = {
+            margin: 10,
+            filename: `quote-QT-${quote.quoteNumber}.pdf`,
+            image: { type: 'jpeg', quality: 0.98 },
+            html2canvas: { scale: 2, useCORS: true },
+            jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+          };
+
+          html2pdf().set(opt).from(element).save().then(() => {
+            downloadBtn.innerHTML = originalText;
+            downloadBtn.disabled = false;
+          }).catch(err => {
+            console.error('PDF Generation Error:', err);
+            downloadBtn.innerHTML = originalText;
+            downloadBtn.disabled = false;
+            alert('Failed to generate PDF. Please try again.');
+          });
+        };
+
+        if (!window.html2pdf) {
+          const script = document.createElement('script');
+          script.src = 'https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js';
+          script.onload = doGenerate;
+          document.head.appendChild(script);
+        } else {
+          doGenerate();
+        }
+      }
+
+      populateQuote(quote) {
+        // Quote number and status
+        const quoteNumberEl = this.querySelector('[data-quote-number]');
+        if (quoteNumberEl) {
+          quoteNumberEl.textContent = `#QT-${quote.quoteNumber}`;
+        }
+
+        const statusEl = this.querySelector('[data-quote-status]');
+        if (statusEl) {
+          statusEl.textContent = quote.status || 'Submitted';
+          statusEl.className = `quote-status quote-status--${(quote.status || 'submitted').toLowerCase()}`;
+        }
+
+        // Customer info
+        const nameEl = this.querySelector('[data-customer-name]');
+        if (nameEl) {
+          nameEl.textContent = quote.customerName || 'N/A';
+        }
+
+        const emailEl = this.querySelector('[data-customer-email]');
+        if (emailEl) {
+          emailEl.textContent = quote.customerEmail || 'N/A';
+        }
+
+        if (quote.customerPhone) {
+          const phoneWrapper = this.querySelector('[data-customer-phone-wrapper]');
+          const phoneEl = this.querySelector('[data-customer-phone]');
+          if (phoneWrapper && phoneEl) {
+            phoneWrapper.style.display = 'block';
+            phoneEl.textContent = quote.customerPhone;
+          }
+        }
+
+        const createdEl = this.querySelector('[data-created-at]');
+        if (createdEl) {
+          const date = new Date(quote.createdAt);
+          createdEl.textContent = date.toLocaleDateString(undefined, {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+          });
+        }
+
+        // Notes
+        if (quote.note) {
+          const noteSection = this.querySelector('[data-note-section]');
+          const noteEl = this.querySelector('[data-note]');
+          if (noteSection && noteEl) {
+            noteSection.style.display = 'block';
+            noteEl.textContent = quote.note;
+          }
+        }
+
+        // Items
+        const itemsEl = this.querySelector('[data-items]');
+        if (itemsEl && quote.items) {
+          itemsEl.innerHTML = quote.items.map(item => this.renderItem(item)).join('');
+        }
+      }
+
+      renderItem(item) {
+        const price = item.price ? `$${Number(item.price).toFixed(2)}` : '';
+        const lineTotal = item.price ? `$${(Number(item.price) * item.quantity).toFixed(2)}` : '';
+        
+        return `
+          <div class="quote-item">
+            ${item.imageUrl ? `<img src="${this.escapeHtml(item.imageUrl)}" alt="${this.escapeHtml(item.title)}" class="quote-item__image">` : ''}
+            <div class="quote-item__details">
+              <h3 class="quote-item__title">${this.escapeHtml(item.title)}</h3>
+              ${item.variantTitle ? `<p class="quote-item__variant">${this.escapeHtml(item.variantTitle)}</p>` : ''}
+              ${item.sku ? `<p class="quote-item__sku">SKU: ${this.escapeHtml(item.sku)}</p>` : ''}
+            </div>
+            <div class="quote-item__quantity">
+              <span class="quote-item__qty-label">Qty:</span>
+              <span class="quote-item__qty-value">${item.quantity}</span>
+            </div>
+            ${price ? `
+              <div class="quote-item__pricing">
+                <div class="quote-item__unit-price">${price} each</div>
+                ${lineTotal ? `<div class="quote-item__line-total">${lineTotal}</div>` : ''}
+              </div>
+            ` : ''}
+          </div>
+        `;
+      }
+
+      escapeHtml(text) {
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+      }
+    }
+
+    if (!customElements.get('quote-viewer')) {
+      customElements.define('quote-viewer', QuoteViewer);
+    }
+  })();
+</script>
+
+{% stylesheet %}
+  .quote-viewer-container {
+    display: block;
+    width: 100%;
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 60px 20px;
+  }
+
+  @media screen and (max-width: 768px) {
+    .quote-viewer-container {
+      padding: 30px 16px;
+    }
+  }
+
+  .quote-viewer-loading,
+  .quote-viewer-error {
+    text-align: center;
+    padding: 60px 20px;
+  }
+
+  .spinner {
+    width: 50px;
+    height: 50px;
+    margin: 0 auto 20px;
+    border: 4px solid #f3f3f3;
+    border-top: 4px solid #7b0303;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+  }
+
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+
+  .error-icon {
+    font-size: 60px;
+    margin-bottom: 20px;
+  }
+
+  .quote-viewer-error h2 {
+    margin-bottom: 10px;
+    color: #dc2626;
+  }
+
+  .quote-viewer-error p {
+    margin-bottom: 30px;
+    color: #6b7280;
+  }
+
+  .quote-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 40px;
+    padding-bottom: 20px;
+    border-bottom: 2px solid #e5e7eb;
+  }
+
+  .quote-header-left {
+    flex: 1;
+  }
+
+  .quote-header h1 {
+    margin: 0 0 12px 0;
+    font-size: 32px;
+    color: #111827;
+  }
+
+  .quote-print-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 24px;
+    background: #7b0303;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+
+  .quote-print-btn:hover {
+    background: #5a0202;
+  }
+
+  .quote-print-btn svg {
+    flex-shrink: 0;
+  }
+
+  @media print {
+    .quote-print-btn {
+      display: none !important;
+    }
+  }
+
+  .quote-status {
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-weight: 600;
+    font-size: 14px;
+    text-transform: capitalize;
+    width: fit-content;
+  }
+
+  .quote-status--submitted {
+    background-color: #dbeafe;
+    color: #1e40af;
+  }
+
+  .quote-status--reviewed {
+    background-color: #fef3c7;
+    color: #92400e;
+  }
+
+  .quote-status--approved {
+    background-color: #d1fae5;
+    color: #065f46;
+  }
+
+  .quote-section {
+    margin-bottom: 40px;
+  }
+
+  .quote-section h2 {
+    font-size: 20px;
+    margin-bottom: 20px;
+    color: #111827;
+  }
+
+  .info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+  }
+
+  .info-item {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .info-label {
+    font-weight: 600;
+    color: #6b7280;
+    font-size: 14px;
+  }
+
+  .info-value {
+    color: #111827;
+    font-size: 16px;
+  }
+
+  .quote-note {
+    background-color: #f9fafb;
+    padding: 16px;
+    border-radius: 8px;
+    border-left: 4px solid #7b0303;
+    white-space: pre-wrap;
+    color: #374151;
+  }
+
+  .quote-items {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .quote-item {
+    display: grid;
+    grid-template-columns: 80px 1fr auto auto;
+    gap: 16px;
+    padding: 16px;
+    background-color: #f9fafb;
+    border-radius: 8px;
+    border: 1px solid #e5e7eb;
+    align-items: center;
+  }
+
+  .quote-item__image {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 6px;
+  }
+
+  .quote-item__details {
+    min-width: 0;
+  }
+
+  .quote-item__title {
+    margin: 0 0 4px 0;
+    font-size: 16px;
+    font-weight: 600;
+    color: #111827;
+  }
+
+  .quote-item__variant,
+  .quote-item__sku {
+    margin: 0;
+    font-size: 14px;
+    color: #6b7280;
+  }
+
+  .quote-item__quantity {
+    text-align: center;
+    padding: 8px 16px;
+    background-color: white;
+    border-radius: 6px;
+    border: 1px solid #e5e7eb;
+  }
+
+  .quote-item__qty-label {
+    display: block;
+    font-size: 12px;
+    color: #6b7280;
+    margin-bottom: 4px;
+  }
+
+  .quote-item__qty-value {
+    display: block;
+    font-size: 18px;
+    font-weight: 600;
+    color: #111827;
+  }
+
+  .quote-item__pricing {
+    text-align: right;
+    min-width: 120px;
+  }
+
+  .quote-item__unit-price {
+    font-size: 14px;
+    color: #6b7280;
+    margin-bottom: 4px;
+  }
+
+  .quote-item__line-total {
+    font-size: 18px;
+    font-weight: 600;
+    color: #111827;
+  }
+
+  .quote-actions {
+    margin-top: 40px;
+    padding: 24px;
+    background-color: #f0fdf4;
+    border-radius: 8px;
+    border: 1px solid #86efac;
+  }
+
+  .quote-help-text {
+    margin: 0;
+    text-align: center;
+    color: #166534;
+    font-size: 16px;
+  }
+
+  @media screen and (max-width: 768px) {
+    .quote-header {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 16px;
+    }
+
+    .quote-item {
+      grid-template-columns: 60px 1fr;
+      gap: 12px;
+    }
+
+    .quote-item__image {
+      width: 60px;
+      height: 60px;
+    }
+
+    .quote-item__quantity,
+    .quote-item__pricing {
+      grid-column: 2;
+    }
+
+    .quote-item__quantity {
+      justify-self: start;
+    }
+
+    .quote-item__pricing {
+      justify-self: end;
+    }
+  }
+{% endstylesheet %}

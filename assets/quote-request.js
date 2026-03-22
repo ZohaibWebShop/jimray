@@ -538,42 +538,34 @@
       })
       .join('');
 
+    const submittedAt = new Date(quote.createdAt).toLocaleString();
+    const totalQuantity = formatNumber((quote.items || []).reduce((sum, item) => sum + (Number(item.quantity) || 0), 0));
+    const totalPrice = formatPrice((quote.items || []).reduce((sum, item) => {
+      const qty = Number(item.quantity) || 0;
+      const unitPrice = item.price != null && item.price !== '' ? Number(item.price) : 0;
+      return sum + (Number.isNaN(unitPrice) ? 0 : unitPrice * qty);
+    }, 0));
+
     const htmlContent = `
       <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; line-height: 1.6; color: #333; max-width: 900px; margin: 0 auto;">
         <div style="background: linear-gradient(135deg, #7b0303 0%, #600202 100%); color: white; padding: 30px; border-radius: 8px 8px 0 0; margin-bottom: 0; display: flex; justify-content: space-between; align-items: center;">
-          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom: 20px;">
-            <div>
-              <h1 style="font-size: 28px; margin-bottom: 8px; margin-top: 0; color: #ffffff;">Quote Request</h1>
-              <p style="opacity: 0.95; font-size: 14px; margin: 0; color: #ffffff;">Quote #QT-${quote.quoteNumber}</p>
-            </div>
-            <img src="https://cdn.shopify.com/s/files/1/0623/8794/5569/files/logo.png?v=1771950005" alt="Jim Ray" style="height: 50px; filter: brightness(0) invert(1);" />
+          <div>
+            <h1 style="font-size: 28px; margin-bottom: 8px; margin-top: 0; color: #ffffff;">Quote Request</h1>
+            <p style="opacity: 0.95; font-size: 14px; margin: 0; color: #ffffff;">Quote #QT-${quote.quoteNumber}</p>
           </div>
-          <div style="height: 6px; background: #ececec; margin-bottom: 30px;"></div>
+          <img src="https://cdn.shopify.com/s/files/1/0623/8794/5569/files/logo_-_white.png?v=1773251086" alt="Jim Ray" style="height: 50px; width: auto; max-width: 220px; object-fit: contain; display: block;" />
+        </div>
+        <div style="height: 6px; background: #ececec; margin-bottom: 30px;"></div>
 
-          <div style="background: #f9f9f9; padding: 20px; border-radius: 6px; margin-bottom: 30px; border: 1px solid #e0e0e0;">
-            <h2 style="font-size: 16px; color: #7b0303; margin-bottom: 12px; margin-top: 0; text-transform: uppercase; letter-spacing: 0.5px;">Quote Information</h2>
-            <div style="display: flex; margin-bottom: 8px;">
-              <div style="font-weight: 600; min-width: 140px; color: #666;">Quote #:</div>
-              <div style="color: #333;">QT-${quote.quoteNumber}</div>
-            </div>
-            <div style="display: flex; margin-bottom: 8px;">
-              <div style="font-weight: 600; min-width: 140px; color: #666;">Date Submitted:</div>
-              <div style="color: #333;">${new Date(quote.createdAt).toLocaleString()}</div>
-            </div>
-            <div style="display: flex; margin-bottom: 8px;">
-              <div style="font-weight: 600; min-width: 140px; color: #666;">Status:</div>
-              <div style="color: #333;">${quote.status || 'Pending'}</div>
-            </div>
-            ${quote.note ? `
-            <div style="display: flex; margin-bottom: 8px;">
-              <div style="font-weight: 600; min-width: 140px; color: #666;">Notes:</div>
-              <div style="color: #333;">${quote.note}</div>
-            </div>
-            ` : ''}
+        <div style="background: #f9f9f9; padding: 20px; border-radius: 6px; margin-bottom: 30px; border: 1px solid #e0e0e0;">
+          <h2 style="font-size: 16px; color: #7b0303; margin-bottom: 12px; margin-top: 0; text-transform: uppercase; letter-spacing: 0.5px;">Quote Information</h2>
+          <div style="display: flex; margin-bottom: 8px;">
+            <div style="font-weight: 600; min-width: 140px; color: #666;">Quote #:</div>
+            <div style="color: #333;">QT-${quote.quoteNumber}</div>
           </div>
           <div style="display: flex; margin-bottom: 8px;">
             <div style="font-weight: 600; min-width: 140px; color: #666;">Date Submitted:</div>
-            <div style="color: #333;">${new Date(quote.createdAt).toLocaleString()}</div>
+            <div style="color: #333;">${submittedAt}</div>
           </div>
           <div style="display: flex; margin-bottom: 8px;">
             <div style="font-weight: 600; min-width: 140px; color: #666;">Status:</div>
@@ -622,8 +614,8 @@
         </table>
 
         <div style="background: #f0f0f0; padding: 15px; border-radius: 6px; margin-bottom: 30px; text-align: right;">
-          <div style="font-weight: 600; font-size: 16px; color: #7b0303;">Total Quantity: ${formatNumber(quote.items.reduce((sum, item) => sum + item.quantity, 0))}</div>
-          <div style="font-weight: 600; font-size: 18px; color: #7b0303; margin-top: 5px;">Total Price: ${formatPrice(quote.items.reduce((sum, item) => sum + (item.price * item.quantity), 0))}</div>
+          <div style="font-weight: 600; font-size: 16px; color: #7b0303;">Total Quantity: ${totalQuantity}</div>
+          <div style="font-weight: 600; font-size: 18px; color: #7b0303; margin-top: 5px;">Total Price: ${totalPrice}</div>
         </div>
 
         <div style="text-align: center; padding-top: 30px; border-top: 2px solid #ececec; color: #666; font-size: 13px;">

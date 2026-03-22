@@ -11,7 +11,7 @@
   "current": {
     "logo": "shopify://shop_images/logo.png",
     "logo_height": 73,
-    "logo_height_mobile": 51,
+    "logo_height_mobile": 72,
     "favicon": "shopify://shop_images/jim-ray-custom-graphite-seals-red.png",
     "type_body_font": "plus_jakarta_sans_n4",
     "type_subheading_font": "plus_jakarta_sans_n5",
@@ -46,6 +46,7 @@
     "page_width": "narrow",
     "page_transition_enabled": false,
     "transition_to_main_product": false,
+    "add_to_cart_animation": false,
     "card_hover_effect": "none",
     "badge_position": "top-right",
     "badge_corner_radius": 100,
@@ -70,6 +71,7 @@
     "currency_code_enabled_product_pages": false,
     "currency_code_enabled_product_cards": false,
     "currency_code_enabled_cart_items": false,
+    "quick_add": false,
     "product_corner_radius": 0,
     "card_corner_radius": 4,
     "show_variant_image": false,
@@ -79,6 +81,8 @@
     "variant_button_border_width": 1,
     "variant_button_radius": 14,
     "variant_button_width": "equal-width-buttons",
+    "quote_api_base_url": "https://jiimray-quote-request.vercel.app",
+    "quote_api_secret": "fseregassrw3r$trffwef23243",
     "content_for_index": [],
     "color_schemes": {
       "scheme-1": {

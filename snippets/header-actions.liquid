@@ -49,55 +49,57 @@
   {% endif %}
   {{- block.shopify_attributes -}}
 >
-  {% if shop.customer_accounts_enabled %}
-    {% liquid
-      assign account_actions_style = ''
-      if display_style == 'text' and section
-        assign actions_font = section.settings.actions_font | default: 'body'
-        assign font_obj = settings.type_heading_font
-        case actions_font
-          when 'body'
-            assign font_obj = settings.type_body_font
-          when 'subheading'
-            assign font_obj = settings.type_subheading_font
-          when 'accent'
-            assign font_obj = settings.type_accent_font
-        endcase
-        assign font_family = font_obj.family | append: ', ' | append: font_obj.fallback_families
-        assign font_family_safe = font_family | replace: '"', "'"
-        assign account_actions_style = '--header-actions-font-family: ' | append: font_family_safe | append: '; --header-actions-font-weight: ' | append: font_obj.weight | append: ';'
-      endif
-    %}
-    <div
-      class="account-button header-actions__action{% if display_style == 'text' %} account-button--text{% endif %} color-{{ settings.popover_color_scheme }}"
-    >
-      <shopify-account
-        menu="{{ customer_account_menu }}"
-        {% if account_actions_style != blank %}
-          style="{{ account_actions_style }}"
-        {% endif %}
+  {% comment %}
+    {% if shop.customer_accounts_enabled %}
+      {% liquid
+        assign account_actions_style = ''
+        if display_style == 'text' and section
+          assign actions_font = section.settings.actions_font | default: 'body'
+          assign font_obj = settings.type_heading_font
+          case actions_font
+            when 'body'
+              assign font_obj = settings.type_body_font
+            when 'subheading'
+              assign font_obj = settings.type_subheading_font
+            when 'accent'
+              assign font_obj = settings.type_accent_font
+          endcase
+          assign font_family = font_obj.family | append: ', ' | append: font_obj.fallback_families
+          assign font_family_safe = font_family | replace: '"', "'"
+          assign account_actions_style = '--header-actions-font-family: ' | append: font_family_safe | append: '; --header-actions-font-weight: ' | append: font_obj.weight | append: ';'
+        endif
+      %}
+      <div
+        class="account-button header-actions__action{% if display_style == 'text' %} account-button--text{% endif %} color-{{ settings.popover_color_scheme }}"
       >
-        {% if customer %}
-          <div class="account-button__fallback"></div>
-        {% else %}
-          <span
-            slot="signed-out-avatar"
-            class="account-button__text header-actions__text-style {% if display_style == 'icon' %}hidden{% else %}mobile:hidden{% endif %}"
-          >
-            {{ 'content.account_title' | t }}
-          </span>
+        <shopify-account
+          menu="{{ customer_account_menu }}"
+          {% if account_actions_style != blank %}
+            style="{{ account_actions_style }}"
+          {% endif %}
+        >
+          {% if customer %}
+            <div class="account-button__fallback"></div>
+          {% else %}
+            <span
+              slot="signed-out-avatar"
+              class="account-button__text header-actions__text-style {% if display_style == 'icon' %}hidden{% else %}mobile:hidden{% endif %}"
+            >
+              {{ 'content.account_title' | t }}
+            </span>
 
-          <span
-            slot="signed-out-avatar"
-            class="{% if display_style != 'icon' %}desktop:hidden{% endif %}"
-            aria-hidden="true"
-          >
-            {{ account_icon }}
-          </span>
-        {% endif %}
-      </shopify-account>
-    </div>
-  {% endif %}
+            <span
+              slot="signed-out-avatar"
+              class="{% if display_style != 'icon' %}desktop:hidden{% endif %}"
+              aria-hidden="true"
+            >
+              {{ account_icon }}
+            </span>
+          {% endif %}
+        </shopify-account>
+      </div>
+    {% endif %}
+  {% endcomment %}
 
   {% if settings.cart_type == 'drawer' and template.name != 'cart' %}
     <script
@@ -234,6 +236,22 @@
       {{ cart_icon }}
     </a>
   {% endif %}
+
+  {% liquid
+    if section.settings.show_free_quote_button
+      echo '<div class="header-actions">'
+      echo '<!-- Desktop Free Quote Button -->'
+      echo '<a href="' | append: section.settings.free_quote_button_url | append: '" class="header-actions__button header-actions__button--desktop button button--primary">'
+      echo section.settings.free_quote_button_text
+      echo '</a>'
+      comment
+        echo '<a href="' | append: section.settings.free_quote_button_url | append: '" class="header-actions__button header-actions__button--mobile button button--primary">'
+        echo section.settings.free_quote_button_text
+        echo '</a>'
+      endcomment
+      echo '</div>'
+    endif
+  %}
 </header-actions>
 
 {% stylesheet %}
@@ -509,10 +527,25 @@
 
   header-actions {
     display: flex;
+    align-items: center;
+    gap: 20px;
 
     @media screen and (max-width: 749px) {
       justify-self: flex-end;
     }
+  }
+
+  header-actions button:has(cart-icon) {
+    cursor: pointer;
+  }
+
+  header-actions cart-icon .svg-wrapper {
+    width: 40px;
+    height: 40px;
+  }
+
+  header-actions cart-icon span.svg-wrapper > svg {
+    width: 40px;
   }
 
   @media screen and (min-width: 750px) {

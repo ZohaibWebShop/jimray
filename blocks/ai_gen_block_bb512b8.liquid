@@ -1,23 +1,7 @@
 {% doc %}
-  @prompt
-    contact form with following content 
-    
-    Get In Touch
-    
-    At Jim Ray Company, we strive to merit our customers’ business by providing quality products with on time deliveries. We believe in service and are dedicated to using our resources to handle customer needs.
-    
-    Please send us a message below and we will get back with you as soon as possible.
-    
-    fields
-    Full Name*
-    Email*
-    Phone
-    Interested in (check all that apply)*
-    show selected collection list should be checkedable 
-    
-    Questions or Comments
-    
-    intractive. animated, and responsive desing , add Other options on in  Get In Touch
+  Free quote submission form - allows both logged-in and guest users to submit quote requests.
+  If user is logged in, pre-fills customer details. Otherwise, allows custom details.
+  Integrates with cart items and submits to quote API.
 {% enddoc %}
 {% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
 
@@ -220,6 +204,99 @@
     margin-top: 16px;
   }
 
+  .ai-contact-form__cart-items-{{ ai_gen_id }} {
+    margin-bottom: 30px;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: {{ block.settings.input_border_radius }}px;
+    border: 1px solid #e0e0e0;
+  }
+
+  .ai-contact-form__cart-header-{{ ai_gen_id }} {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #e0e0e0;
+  }
+
+  .ai-contact-form__cart-title-{{ ai_gen_id }} {
+    font-size: 18px;
+    font-weight: 600;
+    color: {{ block.settings.text_color }};
+    margin: 0;
+  }
+
+  .ai-contact-form__cart-count-{{ ai_gen_id }} {
+    background-color: {{ block.settings.primary_color }};
+    color: white;
+    padding: 4px 12px;
+    border-radius: 12px;
+    font-size: 14px;
+    font-weight: 600;
+  }
+
+  .ai-contact-form__cart-list-{{ ai_gen_id }} {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .ai-contact-form__cart-empty-{{ ai_gen_id }} {
+    text-align: center;
+    color: #666;
+    font-size: 14px;
+    padding: 20px;
+    margin: 0;
+  }
+
+  .ai-contact-form__cart-item-{{ ai_gen_id }} {
+    display: flex;
+    gap: 12px;
+    padding: 10px;
+    background-color: white;
+    border-radius: 8px;
+    border: 1px solid #e0e0e0;
+    align-items: center;
+  }
+
+  .ai-contact-form__cart-item-image-{{ ai_gen_id }} {
+    width: 50px;
+    height: 50px;
+    object-fit: cover;
+    border-radius: 6px;
+    flex-shrink: 0;
+  }
+
+  .ai-contact-form__cart-item-details-{{ ai_gen_id }} {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .ai-contact-form__cart-item-title-{{ ai_gen_id }} {
+    font-size: 14px;
+    font-weight: 600;
+    color: {{ block.settings.text_color }};
+    margin: 0 0 4px 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .ai-contact-form__cart-item-variant-{{ ai_gen_id }} {
+    font-size: 12px;
+    color: #666;
+    margin: 0;
+  }
+
+  .ai-contact-form__cart-item-qty-{{ ai_gen_id }} {
+    font-size: 14px;
+    color: #666;
+    font-weight: 500;
+    flex-shrink: 0;
+  }
+
   @keyframes ai-contact-form-slide-in-{{ ai_gen_id }} {
     to {
       opacity: 1;
@@ -247,151 +324,164 @@
   }
 {% endstyle %}
 
-<contact-form-{{ ai_gen_id }} class="ai-contact-form-{{ ai_gen_id }}" {{ block.shopify_attributes }}>
+<contact-form-{{ ai_gen_id }}
+  class="ai-contact-form-{{ ai_gen_id }}"
+  {{ block.shopify_attributes }}
+  data-quote-request-config
+  data-api-base-url="{{ settings.quote_api_base_url }}"
+  data-secret="{{ settings.quote_api_secret }}"
+  data-customer-id="{% if customer %}{{ customer.id }}{% endif %}"
+  data-customer-email="{% if customer %}{{ customer.email }}{% endif %}"
+  data-customer-name="{% if customer %}{{ customer.name }}{% endif %}"
+>
   <div class="ai-contact-form__header-{{ ai_gen_id }}">
     <h2 class="ai-contact-form__title-{{ ai_gen_id }}">{{ block.settings.title }}</h2>
     <div class="ai-contact-form__description-{{ ai_gen_id }}">
       {{ block.settings.description }}
     </div>
   </div>
-  {% assign form_id = block.id | default: section.id | prepend: 'ContactForm-' %}
-  {%- form 'contact', id: form_id, data-shopify-captcha: "true" -%}
+
+  <div class="ai-contact-form__cart-items-{{ ai_gen_id }}" data-quote-cart-items>
+    <div class="ai-contact-form__cart-header-{{ ai_gen_id }}">
+      <h3 class="ai-contact-form__cart-title-{{ ai_gen_id }}">Items in Your Quote</h3>
+      <span class="ai-contact-form__cart-count-{{ ai_gen_id }}" data-cart-count>0</span>
+    </div>
+    <div class="ai-contact-form__cart-list-{{ ai_gen_id }}" data-cart-list>
+      <p class="ai-contact-form__cart-empty-{{ ai_gen_id }}">
+        Your quote list is empty. Please add items to your quote.
+      </p>
+    </div>
+  </div>
+
+  <div class="ai-contact-form__form-{{ ai_gen_id }}" data-quote-free-form>
+    <div class="ai-contact-form__field-group-{{ ai_gen_id }}" data-delay="0">
+      <label for="contact-name-{{ ai_gen_id }}" class="ai-contact-form__label-{{ ai_gen_id }}">
+        {{ block.settings.name_label }}
+        <span class="ai-contact-form__required-{{ ai_gen_id }}">*</span>
+      </label>
       <input
-      name="contact[id]"
-      type="hidden"
-      value="{{ form_id }}" />
-    <div class="ai-contact-form__form-{{ ai_gen_id }}">
-      <div class="ai-contact-form__field-group-{{ ai_gen_id }}" data-delay="0">
-        <label for="contact-name-{{ ai_gen_id }}" class="ai-contact-form__label-{{ ai_gen_id }}">
-          {{ block.settings.name_label }} <span class="ai-contact-form__required-{{ ai_gen_id }}">*</span>
-        </label>
+        type="text"
+        id="contact-name-{{ ai_gen_id }}"
+        name="name"
+        class="ai-contact-form__input-{{ ai_gen_id }}"
+        value="{% if customer %}{{ customer.name }}{% endif %}"
+        required
+        aria-required="true"
+        placeholder="{{ block.settings.name_placeholder }}"
+        data-quote-customer-name
+      >
+    </div>
+
+    <div class="ai-contact-form__field-group-{{ ai_gen_id }}" data-delay="100">
+      <label for="contact-email-{{ ai_gen_id }}" class="ai-contact-form__label-{{ ai_gen_id }}">
+        {{ block.settings.email_label }}
+        <span class="ai-contact-form__required-{{ ai_gen_id }}">*</span>
+      </label>
+      <input
+        type="email"
+        id="contact-email-{{ ai_gen_id }}"
+        name="email"
+        class="ai-contact-form__input-{{ ai_gen_id }}"
+        value="{% if customer %}{{ customer.email }}{% endif %}"
+        required
+        aria-required="true"
+        autocomplete="email"
+        placeholder="{{ block.settings.email_placeholder }}"
+        data-quote-customer-email
+      >
+    </div>
+
+    <div class="ai-contact-form__field-group-{{ ai_gen_id }}" data-delay="200">
+      <label for="contact-phone-{{ ai_gen_id }}" class="ai-contact-form__label-{{ ai_gen_id }}">
+        {{ block.settings.phone_label }}
+      </label>
+      <input
+        type="tel"
+        id="contact-phone-{{ ai_gen_id }}"
+        name="phone"
+        class="ai-contact-form__input-{{ ai_gen_id }}"
+        value="{% if customer %}{{ customer.phone }}{% endif %}"
+        autocomplete="tel"
+        placeholder="{{ block.settings.phone_placeholder }}"
+        data-quote-customer-phone
+      >
+    </div>
+
+    <div class="ai-contact-form__field-group-{{ ai_gen_id }}" data-delay="300">
+      <label class="ai-contact-form__label-{{ ai_gen_id }}">
+        {{ block.settings.collections_label }}
+        <span class="ai-contact-form__required-{{ ai_gen_id }}">*</span>
+      </label>
+      <div class="ai-contact-form__collections-{{ ai_gen_id }}">
+        {% if block.settings.collections != blank %}
+          {% for collection in block.settings.collections %}
+            <div class="ai-contact-form__checkbox-wrapper-{{ ai_gen_id }}">
+              <input
+                type="checkbox"
+                id="collection-{{ collection.id }}-{{ ai_gen_id }}"
+                name="interested_in"
+                value="{{ collection.title }}"
+                class="ai-contact-form__checkbox-{{ ai_gen_id }}"
+                data-quote-interest
+              >
+              <label
+                for="collection-{{ collection.id }}-{{ ai_gen_id }}"
+                class="ai-contact-form__checkbox-label-{{ ai_gen_id }}"
+              >
+                {{ collection.title }}
+              </label>
+            </div>
+          {% endfor %}
+        {% endif %}
+
+        <div class="ai-contact-form__checkbox-wrapper-{{ ai_gen_id }}">
+          <input
+            type="checkbox"
+            id="other-checkbox-{{ ai_gen_id }}"
+            name="interested_in"
+            value="Other"
+            class="ai-contact-form__checkbox-{{ ai_gen_id }} ai-contact-form__other-checkbox-{{ ai_gen_id }}"
+            data-quote-interest
+          >
+          <label for="other-checkbox-{{ ai_gen_id }}" class="ai-contact-form__checkbox-label-{{ ai_gen_id }}">
+            {{ block.settings.other_label }}
+          </label>
+        </div>
+      </div>
+
+      <div class="ai-contact-form__other-input-{{ ai_gen_id }}" id="other-input-wrapper-{{ ai_gen_id }}">
         <input
           type="text"
-          id="contact-name-{{ ai_gen_id }}"
-          name="contact[name]"
+          id="other-input-{{ ai_gen_id }}"
+          name="other_interest"
           class="ai-contact-form__input-{{ ai_gen_id }}"
-          value="{{ form.name }}"
-          required
-          aria-required="true"
-          placeholder="{{ block.settings.name_placeholder }}"
+          placeholder="{{ block.settings.other_placeholder }}"
+          data-quote-other-interest
         >
       </div>
-
-      <div class="ai-contact-form__field-group-{{ ai_gen_id }}" data-delay="100">
-        <label for="contact-email-{{ ai_gen_id }}" class="ai-contact-form__label-{{ ai_gen_id }}">
-          {{ block.settings.email_label }} <span class="ai-contact-form__required-{{ ai_gen_id }}">*</span>
-        </label>
-        <input
-          type="email"
-          id="contact-email-{{ ai_gen_id }}"
-          name="contact[email]"
-          class="ai-contact-form__input-{{ ai_gen_id }}"
-          value="{{ form.email }}"
-          required
-          aria-required="true"
-          autocomplete="email"
-          placeholder="{{ block.settings.email_placeholder }}"
-          {% if form.errors %}
-            aria-invalid="true"
-            aria-describedby="contact-form-error-{{ ai_gen_id }}"
-          {% endif %}
-        >
-      </div>
-
-      <div class="ai-contact-form__field-group-{{ ai_gen_id }}" data-delay="200">
-        <label for="contact-phone-{{ ai_gen_id }}" class="ai-contact-form__label-{{ ai_gen_id }}">
-          {{ block.settings.phone_label }}
-        </label>
-        <input
-          type="tel"
-          id="contact-phone-{{ ai_gen_id }}"
-          name="contact[phone]"
-          class="ai-contact-form__input-{{ ai_gen_id }}"
-          value="{{ form.phone }}"
-          autocomplete="tel"
-          placeholder="{{ block.settings.phone_placeholder }}"
-        >
-      </div>
-
-      <div class="ai-contact-form__field-group-{{ ai_gen_id }}" data-delay="300">
-        <label class="ai-contact-form__label-{{ ai_gen_id }}">
-          {{ block.settings.collections_label }} <span class="ai-contact-form__required-{{ ai_gen_id }}">*</span>
-        </label>
-        <div class="ai-contact-form__collections-{{ ai_gen_id }}">
-          {% if block.settings.collections != blank %}
-            {% for collection in block.settings.collections %}
-              <div class="ai-contact-form__checkbox-wrapper-{{ ai_gen_id }}">
-                <input
-                  type="checkbox"
-                  id="collection-{{ collection.id }}-{{ ai_gen_id }}"
-                  name="contact[interested_in][]"
-                  value="{{ collection.title }}"
-                  class="ai-contact-form__checkbox-{{ ai_gen_id }}"
-                >
-                <label for="collection-{{ collection.id }}-{{ ai_gen_id }}" class="ai-contact-form__checkbox-label-{{ ai_gen_id }}">
-                  {{ collection.title }}
-                </label>
-              </div>
-            {% endfor %}
-          {% endif %}
-          
-          <div class="ai-contact-form__checkbox-wrapper-{{ ai_gen_id }}">
-            <input
-              type="checkbox"
-              id="other-checkbox-{{ ai_gen_id }}"
-              name="contact[interested_in][]"
-              value="Other"
-              class="ai-contact-form__checkbox-{{ ai_gen_id }} ai-contact-form__other-checkbox-{{ ai_gen_id }}"
-            >
-            <label for="other-checkbox-{{ ai_gen_id }}" class="ai-contact-form__checkbox-label-{{ ai_gen_id }}">
-              {{ block.settings.other_label }}
-            </label>
-          </div>
-        </div>
-        
-        <div class="ai-contact-form__other-input-{{ ai_gen_id }}" id="other-input-wrapper-{{ ai_gen_id }}">
-          <input
-            type="text"
-            id="other-input-{{ ai_gen_id }}"
-            name="contact[other_interest]"
-            class="ai-contact-form__input-{{ ai_gen_id }}"
-            placeholder="{{ block.settings.other_placeholder }}"
-          >
-        </div>
-      </div>
-
-      <div class="ai-contact-form__field-group-{{ ai_gen_id }}" data-delay="400">
-        <label for="contact-message-{{ ai_gen_id }}" class="ai-contact-form__label-{{ ai_gen_id }}">
-          {{ block.settings.message_label }}
-        </label>
-        <textarea
-          id="contact-message-{{ ai_gen_id }}"
-          name="contact[body]"
-          class="ai-contact-form__textarea-{{ ai_gen_id }}"
-          placeholder="{{ block.settings.message_placeholder }}"
-        >{{ form.body }}</textarea>
-      </div>
-
-
-      <div class="ai-contact-form__field-group-{{ ai_gen_id }}" data-delay="500">
-        <button type="submit" class="ai-contact-form__button-{{ ai_gen_id }}">
-          <span class="ai-contact-form__button-text-{{ ai_gen_id }}">{{ block.settings.button_text }}</span>
-        </button>
-      </div>
-
-      {%- if form.posted_successfully? -%}
-        <div class="ai-contact-form__success-{{ ai_gen_id }}">
-          {{ block.settings.success_message }}
-        </div>
-      {%- endif -%}
-
-      {%- if form.errors -%}
-        <div id="contact-form-error-{{ ai_gen_id }}" class="ai-contact-form__error-{{ ai_gen_id }}">
-          {{ form.errors.messages.email }}
-        </div>
-      {%- endif -%}
     </div>
-  {%- endform -%}
+
+    <div class="ai-contact-form__field-group-{{ ai_gen_id }}" data-delay="400">
+      <label for="contact-message-{{ ai_gen_id }}" class="ai-contact-form__label-{{ ai_gen_id }}">
+        {{ block.settings.message_label }}
+      </label>
+      <textarea
+        id="contact-message-{{ ai_gen_id }}"
+        name="message"
+        class="ai-contact-form__textarea-{{ ai_gen_id }}"
+        placeholder="{{ block.settings.message_placeholder }}"
+        data-quote-note
+      ></textarea>
+    </div>
+
+    <div class="ai-contact-form__field-group-{{ ai_gen_id }}" data-delay="500">
+      <button type="button" class="ai-contact-form__button-{{ ai_gen_id }}" data-quote-free-submit>
+        <span class="ai-contact-form__button-text-{{ ai_gen_id }}">{{ block.settings.button_text }}</span>
+      </button>
+    </div>
+
+    <div class="ai-contact-form__message-{{ ai_gen_id }}" data-quote-message style="display:none;"></div>
+  </div>
 </contact-form-{{ ai_gen_id }}>
 
 <script>
@@ -403,8 +493,9 @@
 
       connectedCallback() {
         this.animateFields();
-        this.setupCheckboxValidation();
         this.setupOtherOption();
+        this.setupQuoteSubmission();
+        this.loadCartItems();
       }
 
       animateFields() {
@@ -429,104 +520,198 @@
         });
       }
 
-      setupCheckboxValidation() {
-        const form = this.querySelector('form');
-        const checkboxes = this.querySelectorAll('.ai-contact-form__checkbox-{{ ai_gen_id }}');
-        
-        // Use Shopify's official CAPTCHA protection method
-        if (window.Shopify && window.Shopify.captcha && window.Shopify.captcha.protect) {
-          window.Shopify.captcha.protect(form, () => {
-            console.log('CAPTCHA protection enabled for contact form');
-          });
-        }
-        
-        // Handle form submission with AJAX
-        form.addEventListener('submit', (e) => {
-          e.preventDefault(); 
-          
-          // Validate checkboxes if they exist
-          if (checkboxes.length > 0) {
-            const isChecked = Array.from(checkboxes).some(checkbox => checkbox.checked);
-            if (!isChecked) {
-              alert('Please select at least one option from "Interested in"');
-              return;
-            }
-          }
-          
-          // Submit form via AJAX
-          this.submitFormAjax(form);
+      setupQuoteSubmission() {
+        const submitBtn = this.querySelector('[data-quote-free-submit]');
+        if (!submitBtn) return;
+
+        submitBtn.addEventListener('click', async (e) => {
+          e.preventDefault();
+          await this.handleQuoteSubmit();
         });
       }
 
-      submitFormAjax(form) {
-        const submitButton = form.querySelector('.ai-contact-form__button-{{ ai_gen_id }}');
+      async handleQuoteSubmit() {
+        const submitButton = this.querySelector('[data-quote-free-submit]');
         const buttonText = submitButton.querySelector('.ai-contact-form__button-text-{{ ai_gen_id }}');
         const originalText = buttonText.textContent;
-        
-        // Show loading state
-        buttonText.textContent = 'Sending...';
-        submitButton.disabled = true;
-        
-        // Remove existing messages
-        this.clearMessages();
-        
-        // Prepare form data
-        const formData = new FormData(form);
-        formData.append('form_type', 'contact');
-        formData.append('utf8', '✓');
-        
-        // Submit form via fetch
-        fetch('/contact', {
-          method: 'POST',
-          body: formData,
-          headers: {
-            'Accept': 'application/json, text/javascript, */*; q=0.01',
-            'X-Requested-With': 'XMLHttpRequest'
+
+        // Validate form
+        const nameInput = this.querySelector('[data-quote-customer-name]');
+        const emailInput = this.querySelector('[data-quote-customer-email]');
+        const checkboxes = this.querySelectorAll('[data-quote-interest]');
+
+        if (!nameInput.value.trim()) {
+          this.showErrorMessage('Please enter your name');
+          return;
+        }
+
+        if (!emailInput.value.trim()) {
+          this.showErrorMessage('Please enter your email');
+          return;
+        }
+
+        const isChecked = Array.from(checkboxes).some(cb => cb.checked);
+        if (!isChecked) {
+          this.showErrorMessage('Please select at least one option from "Interested in"');
+          return;
+        }
+
+        try {
+          buttonText.textContent = 'Submitting...';
+          submitButton.disabled = true;
+          this.clearMessages();
+
+          // Get cart items
+          const cartResponse = await fetch('/cart.js');
+          const cart = await cartResponse.json();
+
+          if (!cart.items || cart.items.length === 0) {
+            this.showErrorMessage('Your quote list is empty. Please add items to your quote before submitting.');
+            return;
           }
-        })
-        .then(response => {
-          if (response.ok) {
-            return response.text();
+
+          // Get config
+          const config = this.getConfig();
+          if (!config.apiBaseUrl || !config.secret) {
+            this.showErrorMessage('Quote system is not configured. Please contact support.');
+            return;
           }
-          throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-        })
-        .then(responseText => {
-          // Check for success indicators in the response
-          if (responseText.includes('form-success') || 
-              responseText.includes('posted_successfully') || 
-              responseText.includes('thank') ||
-              responseText.includes('success')) {
-            this.showSuccessMessage();
-            form.reset();
-            // Reset other option if it was shown
-            const otherInputWrapper = this.querySelector('#other-input-wrapper-{{ ai_gen_id }}');
-            if (otherInputWrapper) {
-              otherInputWrapper.classList.remove('show');
+
+          // Build customer data
+          const customerName = nameInput.value.trim();
+          const customerEmail = emailInput.value.trim();
+          const customerPhone = this.querySelector('[data-quote-customer-phone]')?.value.trim() || '';
+
+          // Build note with interests and message
+          const interests = Array.from(checkboxes)
+            .filter(cb => cb.checked)
+            .map(cb => cb.value);
+          const otherInterest = this.querySelector('[data-quote-other-interest]')?.value.trim() || '';
+          const message = this.querySelector('[data-quote-note]')?.value.trim() || '';
+
+          let noteText = '';
+          if (interests.length > 0) {
+            noteText += 'Interested in: ' + interests.join(', ');
+            if (otherInterest && interests.includes('Other')) {
+              noteText += ' (' + otherInterest + ')';
             }
-          } else if (responseText.includes('error') || responseText.includes('invalid')) {
-            // Try to extract error message
-            const parser = new DOMParser();
-            const doc = parser.parseFromString(responseText, 'text/html');
-            const errorElement = doc.querySelector('.errors, .error, [class*="error"]');
-            const errorMessage = errorElement ? 
-              errorElement.textContent.trim() : 
-              'Please check your information and try again.';
-            this.showErrorMessage(errorMessage);
-          } else {
-            // Default to success if no clear error indicators
-            this.showSuccessMessage();
-            form.reset();
+            noteText += '\n\n';
           }
-        })
-        .catch(error => {
-          console.error('Form submission error:', error);
-          this.showErrorMessage('There was an error sending your message. Please try again.');
-        })
-        .finally(() => {
-          // Reset button state
+          if (message) {
+            noteText += message;
+          }
+
+          // Map cart items to quote format
+          const items = cart.items.map(item => ({
+            productId: String(item.product_id || ''),
+            variantId: String(item.variant_id || item.id || ''),
+            title: item.product_title || item.title || '',
+            variantTitle: item.variant_title || '',
+            sku: item.sku || '',
+            quantity: item.quantity,
+            price: item.price / 100,
+            imageUrl: item.image || item.featured_image?.url || '',
+            productUrl: item.url || ''
+          }));
+
+          // Submit quote
+          const response = await fetch(`${config.apiBaseUrl}/api/quotes`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'X-QUOTE-SECRET': config.secret
+            },
+            body: JSON.stringify({
+              customer: {
+                shopifyCustomerId: config.customerId || null,
+                email: customerEmail,
+                name: customerName,
+                phone: customerPhone || null
+              },
+              note: noteText,
+              items
+            })
+          });
+
+          if (!response.ok) {
+            const errorData = await response.json().catch(() => ({}));
+            throw new Error(errorData.error || 'Failed to submit quote');
+          }
+
+          const result = await response.json();
+
+          // Clear cart
+          await fetch('/cart/clear.js', { method: 'POST' });
+
+          // Show success and redirect
+          this.showSuccessMessage();
+          
+          setTimeout(() => {
+            if (result.quoteId && config.customerId) {
+              window.location.href = `/pages/quote-details?quoteId=${encodeURIComponent(result.quoteId)}`;
+            } else {
+              window.location.href = '/pages/free-quote?submitted=1';
+            }
+          }, 1500);
+
+        } catch (error) {
+          console.error('Quote submission error:', error);
+          this.showErrorMessage(error.message || 'Failed to submit quote. Please try again.');
+        } finally {
           buttonText.textContent = originalText;
           submitButton.disabled = false;
-        });
+        }
+      }
+
+      getConfig() {
+        return {
+          apiBaseUrl: this.dataset.apiBaseUrl || '',
+          secret: this.dataset.secret || '',
+          customerId: this.dataset.customerId || '',
+          customerEmail: this.dataset.customerEmail || '',
+          customerName: this.dataset.customerName || ''
+        };
+      }
+
+      async loadCartItems() {
+        try {
+          const response = await fetch('/cart.js');
+          const cart = await response.json();
+          
+          const cartList = this.querySelector('[data-cart-list]');
+          const cartCount = this.querySelector('[data-cart-count]');
+          
+          if (!cartList || !cartCount) return;
+          
+          cartCount.textContent = cart.item_count || 0;
+          
+          if (!cart.items || cart.items.length === 0) {
+            cartList.innerHTML = '<p class="ai-contact-form__cart-empty-{{ ai_gen_id }}">Your quote list is empty. Please add items to your quote.</p>';
+            return;
+          }
+          
+          const itemsHTML = cart.items.map(item => {
+            const image = item.image || item.featured_image?.url || '';
+            const title = item.product_title || item.title || '';
+            const variant = item.variant_title || '';
+            const quantity = item.quantity || 1;
+            
+            return `
+              <div class="ai-contact-form__cart-item-{{ ai_gen_id }}">
+                ${image ? `<img src="${image}" alt="${title}" class="ai-contact-form__cart-item-image-{{ ai_gen_id }}">` : ''}
+                <div class="ai-contact-form__cart-item-details-{{ ai_gen_id }}">
+                  <p class="ai-contact-form__cart-item-title-{{ ai_gen_id }}">${title}</p>
+                  ${variant ? `<p class="ai-contact-form__cart-item-variant-{{ ai_gen_id }}">${variant}</p>` : ''}
+                </div>
+                <span class="ai-contact-form__cart-item-qty-{{ ai_gen_id }}">Qty: ${quantity}</span>
+              </div>
+            `;
+          }).join('');
+          
+          cartList.innerHTML = itemsHTML;
+        } catch (error) {
+          console.error('Error loading cart items:', error);
+        }
       }
 
       setupOtherOption() {
@@ -549,33 +734,32 @@
 
 
       clearMessages() {
-        const existingSuccess = this.querySelector('.ai-contact-form__success-{{ ai_gen_id }}');
-        const existingError = this.querySelector('.ai-contact-form__error-{{ ai_gen_id }}');
-        
-        if (existingSuccess) existingSuccess.remove();
-        if (existingError) existingError.remove();
+        const messageDiv = this.querySelector('[data-quote-message]');
+        if (messageDiv) {
+          messageDiv.style.display = 'none';
+          messageDiv.textContent = '';
+          messageDiv.className = 'ai-contact-form__message-{{ ai_gen_id }}';
+        }
       }
 
       showSuccessMessage() {
-        const form = this.querySelector('.ai-contact-form__form-{{ ai_gen_id }}');
-        const successDiv = document.createElement('div');
-        successDiv.className = 'ai-contact-form__success-{{ ai_gen_id }}';
-        successDiv.textContent = {{ block.settings.success_message | json }};
-        form.appendChild(successDiv);
-        
-        // Scroll to success message
-        successDiv.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        const messageDiv = this.querySelector('[data-quote-message]');
+        if (messageDiv) {
+          messageDiv.className = 'ai-contact-form__message-{{ ai_gen_id }} ai-contact-form__success-{{ ai_gen_id }}';
+          messageDiv.textContent = {{ block.settings.success_message | json }};
+          messageDiv.style.display = 'block';
+          messageDiv.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
       }
 
       showErrorMessage(message) {
-        const form = this.querySelector('.ai-contact-form__form-{{ ai_gen_id }}');
-        const errorDiv = document.createElement('div');
-        errorDiv.className = 'ai-contact-form__error-{{ ai_gen_id }}';
-        errorDiv.textContent = message;
-        form.appendChild(errorDiv);
-        
-        // Scroll to error message
-        errorDiv.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        const messageDiv = this.querySelector('[data-quote-message]');
+        if (messageDiv) {
+          messageDiv.className = 'ai-contact-form__message-{{ ai_gen_id }} ai-contact-form__error-{{ ai_gen_id }}';
+          messageDiv.textContent = message;
+          messageDiv.style.display = 'block';
+          messageDiv.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
       }
     }
 

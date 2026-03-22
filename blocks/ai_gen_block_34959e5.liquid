@@ -13,16 +13,14 @@
     block#3 text 
     block#4 button with background 
     
-    should be mobile responsive intractive and animated 
-    
-    
+    should be mobile responsive intractive and animated
 {% enddoc %}
 {% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
 
 {% style %}
    #shopify-section-{{ section.id }} {
     position: relative;
-   background-image:radial-gradient(circle at 27% 33%, rgba(193, 193, 193,0.04) 0%, rgba(193, 193, 193,0.04) 50%,rgba(77, 77, 77,0.04) 50%, rgba(77, 77, 77,0.04) 100%),radial-gradient(circle at 35% 8%, rgba(183, 183, 183,0.04) 0%, rgba(183, 183, 183,0.04) 50%,rgba(25, 25, 25,0.04) 50%, rgba(25, 25, 25,0.04) 100%),radial-gradient(circle at 93% 50%, rgba(218, 218, 218,0.04) 0%, rgba(218, 218, 218,0.04) 50%,rgba(127, 127, 127,0.04) 50%, rgba(127, 127, 127,0.04) 100%),linear-gradient(90deg, hsl(116,0%,99%),hsl(116,0%,99%)); 
+   background-image:radial-gradient(circle at 27% 33%, rgba(193, 193, 193,0.04) 0%, rgba(193, 193, 193,0.04) 50%,rgba(77, 77, 77,0.04) 50%, rgba(77, 77, 77,0.04) 100%),radial-gradient(circle at 35% 8%, rgba(183, 183, 183,0.04) 0%, rgba(183, 183, 183,0.04) 50%,rgba(25, 25, 25,0.04) 50%, rgba(25, 25, 25,0.04) 100%),radial-gradient(circle at 93% 50%, rgba(218, 218, 218,0.04) 0%, rgba(218, 218, 218,0.04) 50%,rgba(127, 127, 127,0.04) 50%, rgba(127, 127, 127,0.04) 100%),linear-gradient(90deg, hsl(116,0%,99%),hsl(116,0%,99%));
   }
   .ai-experience-section-{{ ai_gen_id }} {
     display: block;
@@ -93,7 +91,7 @@
     width: 100%;
     height:100%;
     top:0px;
-    background-color: RGBA(192,183,183,1); 
+    background-color: RGBA(192,183,183,1);
     clip-path: polygon(5% 0, 100% 0, 100% 75%, 95% 100%, 0 100%, 0 25%);
   }
 
@@ -127,6 +125,21 @@
     opacity: 1;
   }
 
+  @media screen and (max-width: 749px) {
+    .ai-experience-counter-number-{{ ai_gen_id }} {
+      transform: translate(-50%, calc({{ block.settings.counter_y_position }}px * 0.7));
+    }
+
+    .ai-experience-counter-text-{{ ai_gen_id }} {
+      margin-top: 8px;
+      text-align: center;
+    }
+
+    .ai-experience-counter-block-{{ ai_gen_id }}:before {
+      clip-path: polygon(8% 0, 100% 0, 100% 75%, 92% 100%, 0 100%, 0 25%);
+    }
+  }
+
   .ai-experience-heading-{{ ai_gen_id }} {
     font-size: {{ block.settings.heading_size }}px;
     font-weight: 600;
@@ -150,6 +163,11 @@
     transform: translateY(20px);
   }
 
+  .ai-experience-text-{{ ai_gen_id }} ul {
+    margin: 0;
+    padding: 0 0 0 20px;
+  }
+
   .ai-experience-text-{{ ai_gen_id }}.ai-animate-in-{{ ai_gen_id }} {
     animation: ai-fade-up-{{ ai_gen_id }} 0.6s ease 0.2s forwards;
   }
@@ -169,6 +187,8 @@
     align-self: flex-start;
     opacity: 0;
     transform: translateY(20px);
+    clip-path: polygon(6% 0, 100% 0, 100% 75%, 94% 100%, 0 100%, 0 25%);
+    text-align: center;
   }
 
   .ai-experience-button-{{ ai_gen_id }}.ai-animate-in-{{ ai_gen_id }} {
@@ -317,15 +337,15 @@
 
       animateContent() {
         this.animateCounter();
-        
+
         if (this.heading) {
           this.heading.classList.add('ai-animate-in-{{ ai_gen_id }}');
         }
-        
+
         if (this.text) {
           this.text.classList.add('ai-animate-in-{{ ai_gen_id }}');
         }
-        
+
         if (this.button) {
           this.button.classList.add('ai-animate-in-{{ ai_gen_id }}');
         }

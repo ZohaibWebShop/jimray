@@ -697,6 +697,17 @@
         {%- endif -%}
       </div>
 
+      {% if section.settings.show_free_quote_button %}
+        <div style="padding: 20px;">
+          <a
+            href="{{ section.settings.free_quote_button_url }}"
+            class="header-actions__button header-actions__button-drawer button button--primary"
+          >
+            {{ section.settings.free_quote_button_text }}
+          </a>
+        </div>
+      {% endif %}
+
       {% liquid
         if block_settings.menu_style == 'featured_collections'
           assign top_level_featured_collections = linklist.links | where: 'type', 'collection_link'

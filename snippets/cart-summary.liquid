@@ -35,12 +35,12 @@
     {%- endif -%}
   </div>
 
-  <div class="cart-actions">
+  {% comment %} <div class="cart-actions">
     <div class="cart-note" style="width:100%; margin-bottom: var(--padding-lg);">
       <label class="cart-note__label cart-primary-typography" for="quote-note">Special instructions / notes</label>
       <textarea id="quote-note" class="cart-note__instructions" rows="3" data-quote-note></textarea>
     </div>
-  </div>
+  </div> {% endcomment %}
 
   {%- liquid
     if settings.currency_code_enabled_cart_total
@@ -67,7 +67,7 @@
       </span>
     </div>
 
-    <div class="cart-totals__item cart-totals__total cart-primary-typography">
+    {% comment %} <div class="cart-totals__item cart-totals__total cart-primary-typography">
       <span class="cart-totals__total-label">
         {{ 'content.total' | t }}
       </span>
@@ -75,23 +75,19 @@
       <span class="cart-totals__total-value cart-secondary-typography" data-testid="cart-total-value">
         {{- total_price -}}
       </span>
-    </div>
+    </div> {% endcomment %}
   </div>
 </div>
 
   <div class="cart__ctas">
-    <button
-      type="button"
+    <a
+      href="/pages/free-quote"
       class="cart__checkout-button button"
-      data-quote-submit
-      {% if cart == empty %}
-        disabled
-      {% endif %}
     >
       <span class="button-text">
         Submit quote request
       </span>
-    </button>
+    </a>
   </div>
 
 {% stylesheet %}

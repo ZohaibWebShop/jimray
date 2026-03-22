@@ -35,19 +35,47 @@
 
   /* Print header with logo and brand colors */
   [data-quote-details]::before {
-    content: '';
-    display: block;
-    background: #a96945;
+    content: 'Quote Request';
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #7b0303;
     color: white;
-    padding: 24px 30px;
+    padding: 30px 40px;
     margin: -40px -40px 30px -40px;
-    background-image: url('https://pexplanters.com/cdn/shop/files/Logo_primary_white.png?v=1735074839&width=500');
+    background-image: url('https://cdn.shopify.com/s/files/1/0623/8794/5569/files/logo_-_white.png?v=1773251086');
     background-repeat: no-repeat;
     background-position: left center;
-    background-size: auto 32px;
-    min-height: 60px;
+    background-size: auto 40px;
+    min-height: 80px;
+    font-size: 24px;
+    font-weight: 700;
     -webkit-print-color-adjust: exact;
     print-color-adjust: exact;
+  }
+
+  /* Hide the colored header bar from the quote info card in print */
+  [data-quote-details] > div > div > div[style*="background:#7b0303"],
+  [data-quote-details] > div > div > div[style*="background: #7b0303"] {
+    display: none !important;
+  }
+
+  /* Hide the green accent bar at bottom of card */
+  [data-quote-details] > div > div > div[style*="background:#95c45b"],
+  [data-quote-details] > div > div > div[style*="background: #95c45b"] {
+    display: none !important;
+  }
+
+  /* Adjust the quote card for print */
+  [data-quote-details] > div > div {
+    border: 1px solid #e5e7eb !important;
+    border-radius: 8px !important;
+    overflow: visible !important;
+  }
+
+  /* Quote card content padding */
+  [data-quote-details] > div > div > div[style*="padding"] {
+    padding: 24px !important;
   }
 
   /* Quote card styling */
@@ -91,7 +119,7 @@
 
   /* Print footer */
   [data-quote-details]::after {
-    content: 'PexPlanters - Thank you for your quote request';
+    content: 'Jim Ray - Thank you for your quote request';
     display: block;
     margin-top: 30px;
     padding-top: 20px;
@@ -112,17 +140,9 @@
     page-break-after: avoid;
   }
 
-  /* Accent bar color */
-  [style*="background:#95c45b"],
-  [style*="background: #95c45b"] {
-    -webkit-print-color-adjust: exact !important;
-    print-color-adjust: exact !important;
-  }
-
-  /* Primary header color */
-  [style*="background:#b26e48"],
-  [style*="background: #b26e48"] {
-    background: #a96945 !important;
+  /* Ensure brand colors print correctly */
+  [style*="background:#7b0303"],
+  [style*="background: #7b0303"] {
     -webkit-print-color-adjust: exact !important;
     print-color-adjust: exact !important;
   }

@@ -242,6 +242,7 @@
       "block_order": [
         "ai_gen_block_3a13955_aRNKJP"
       ],
+      "disabled": true,
       "settings": {
         "content_direction": "column",
         "vertical_on_mobile": true,
@@ -293,11 +294,11 @@
             "heading": "<p><strong>The Jim Ray Advantage</strong></p>",
             "heading_size": 40,
             "heading_color": "#000000",
-            "text": "<ul><li>Serving Customers Worldwide for over 46 Years</li><li>Receiving an A+ Rating from Multiple Fortune 500 companies including Oil and Gas Producers, Oilfield Service Providers, Pipelines, Refineries and OEM Manufacturers</li><li>Manufacturing Products with top quality materials at its wholly owned plant in Houston, TX to ensure reliability and less downtime</li><li>Providing Custom Graphite Solutions for Applications in wellheads, gate valves, and ball valves</li><li>Home of the Industry Leading Tiger Pak Plastic Injection Packing<br/><br/></li></ul>",
+            "text": "<ul><li>Serving Customers Worldwide for over 46 Years</li><li>Receiving an A+ Rating from Multiple Fortune 500 companies including Oil and Gas Producers, Oilfield Service Providers, Pipelines, Refineries and OEM Manufacturers</li><li>Manufacturing Products with top quality materials at its wholly owned plant in Houston, TX to ensure reliability and less downtime</li><li>Providing Custom Graphite Solutions for Applications in wellheads, gate valves, and ball valves</li><li>Home of the Industry Leading Tiger Pak Plastic Injection Packing</li></ul>",
             "text_size": 16,
             "text_color": "#1a1a1a",
-            "button_text": "Learn more",
-            "button_link": "#shopify-section-template--17128153251937__blocks_DkH6wX",
+            "button_text": "Learn More About Jim Ray Company",
+            "button_link": "shopify://pages/company-profile",
             "button_bg_color": "#7b0002",
             "button_text_color": "#ffffff",
             "button_hover_bg_color": "#560406",
@@ -439,8 +440,8 @@
             "background_color": "#ececec",
             "border_radius": 0,
             "heading_color": "#91080a",
-            "heading_size": 32,
-            "heading_size_mobile": 24,
+            "heading_size": 40,
+            "heading_size_mobile": 32,
             "text_color": "#333333",
             "text_size": 16,
             "text_size_mobile": 14,

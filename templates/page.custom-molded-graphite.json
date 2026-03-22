@@ -1,0 +1,558 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "main": {
+      "type": "main-page",
+      "blocks": {
+        "heading": {
+          "type": "text",
+          "name": "Title",
+          "settings": {
+            "text": "<h1>{{ closest.page.title }}</h1>",
+            "width": "100%",
+            "max_width": "normal",
+            "alignment": "left",
+            "type_preset": "h2",
+            "font": "var(--font-primary--family)",
+            "font_size": "",
+            "line_height": "normal",
+            "letter_spacing": "normal",
+            "case": "none",
+            "wrap": "pretty",
+            "color": "",
+            "background": false,
+            "background_color": "#00000026",
+            "corner_radius": 0,
+            "padding-block-start": 0,
+            "padding-block-end": 0,
+            "padding-inline-start": 0,
+            "padding-inline-end": 0
+          },
+          "blocks": {}
+        },
+        "page-content": {
+          "type": "page-content",
+          "settings": {},
+          "blocks": {}
+        }
+      },
+      "block_order": [
+        "heading",
+        "page-content"
+      ],
+      "disabled": true,
+      "settings": {
+        "content_direction": "column",
+        "gap": 32,
+        "color_scheme": "",
+        "padding-block-start": 40,
+        "padding-block-end": 80
+      }
+    },
+    "hero_PzjKQ3": {
+      "type": "hero",
+      "blocks": {
+        "text_ycmVAt": {
+          "type": "text",
+          "settings": {
+            "text": "<h1>Custom Molded Graphite Seals</h1>",
+            "width": "fit-content",
+            "max_width": "narrow",
+            "alignment": "left",
+            "type_preset": "h1",
+            "font": "var(--font-body--family)",
+            "font_size": "1rem",
+            "line_height": "normal",
+            "letter_spacing": "normal",
+            "case": "none",
+            "wrap": "pretty",
+            "color": "var(--color-foreground)",
+            "background": false,
+            "background_color": "#00000026",
+            "corner_radius": 0,
+            "padding-block-start": 0,
+            "padding-block-end": 0,
+            "padding-inline-start": 0,
+            "padding-inline-end": 0
+          },
+          "blocks": {}
+        }
+      },
+      "block_order": [
+        "text_ycmVAt"
+      ],
+      "custom_css": [
+        ".hero__scroll-down {display: none;}"
+      ],
+      "name": "t:names.hero",
+      "settings": {
+        "media_type_1": "image",
+        "image_1": "shopify://shop_images/jim-ray-wellhead-custom-graphite-seals.jpg",
+        "media_type_2": "image",
+        "stack_media_on_mobile": false,
+        "custom_mobile_media": false,
+        "media_type_1_mobile": "image",
+        "media_type_2_mobile": "image",
+        "link": "",
+        "open_in_new_tab": false,
+        "content_direction": "column",
+        "vertical_on_mobile": true,
+        "horizontal_alignment": "flex-start",
+        "vertical_alignment": "center",
+        "align_baseline": false,
+        "horizontal_alignment_flex_direction_column": "center",
+        "vertical_alignment_flex_direction_column": "center",
+        "gap": 16,
+        "section_width": "page-width",
+        "section_height": "medium",
+        "section_height_custom": 50,
+        "color_scheme": "scheme-5",
+        "toggle_overlay": true,
+        "overlay_color": "#00000026",
+        "overlay_style": "gradient",
+        "gradient_direction": "to top",
+        "blurred_reflection": false,
+        "reflection_opacity": 75,
+        "padding-block-start": 40,
+        "padding-block-end": 40
+      }
+    },
+    "section_X3Kh9d": {
+      "type": "section",
+      "blocks": {
+        "group_NdHVtU": {
+          "type": "group",
+          "name": "t:names.column",
+          "settings": {
+            "content_direction": "column",
+            "vertical_on_mobile": true,
+            "horizontal_alignment": "flex-start",
+            "vertical_alignment": "center",
+            "align_baseline": false,
+            "horizontal_alignment_flex_direction_column": "flex-start",
+            "vertical_alignment_flex_direction_column": "flex-start",
+            "gap": 8,
+            "width": "fill",
+            "custom_width": 100,
+            "width_mobile": "fill",
+            "custom_width_mobile": 100,
+            "height": "fit",
+            "custom_height": 100,
+            "inherit_color_scheme": true,
+            "color_scheme": "",
+            "background_media": "none",
+            "video_position": "cover",
+            "background_image_position": "cover",
+            "border": "none",
+            "border_width": 1,
+            "border_opacity": 100,
+            "border_radius": 0,
+            "toggle_overlay": false,
+            "overlay_color": "#00000026",
+            "overlay_style": "solid",
+            "gradient_direction": "to top",
+            "link": "",
+            "open_in_new_tab": false,
+            "placeholder": "",
+            "padding-block-start": 10,
+            "padding-block-end": 0,
+            "padding-inline-start": 0,
+            "padding-inline-end": 0
+          },
+          "blocks": {
+            "text_Hc6MaJ": {
+              "type": "text",
+              "name": "t:names.heading",
+              "settings": {
+                "text": "<h2>Graphite Seals: Superior in High Temperature Applications</h2>",
+                "width": "100%",
+                "max_width": "normal",
+                "alignment": "left",
+                "type_preset": "h3",
+                "font": "var(--font-body--family)",
+                "font_size": "1rem",
+                "line_height": "normal",
+                "letter_spacing": "normal",
+                "case": "none",
+                "wrap": "pretty",
+                "color": "var(--color-foreground)",
+                "background": false,
+                "background_color": "#00000026",
+                "corner_radius": 0,
+                "padding-block-start": 0,
+                "padding-block-end": 20,
+                "padding-inline-start": 0,
+                "padding-inline-end": 0
+              },
+              "blocks": {}
+            },
+            "text_zJUfiy": {
+              "type": "text",
+              "name": "t:names.description",
+              "settings": {
+                "text": "<ul><li>The Jim Ray Company innovatively created the Graphite Seal for the Oil and Gas industry in the 1980s</li><li>These seals are primarily used in as lockscrew packing in wellheads and stem packing in ball and gate valves</li><li>The Jim Ray Company can tailor a graphite seal solution for your company based on its UltraBraid Line found below</li><li>With its superior performance in high temperatures, Graphite Seals are much more reliable than competing seals</li></ul>",
+                "width": "100%",
+                "max_width": "normal",
+                "alignment": "left",
+                "type_preset": "rte",
+                "font": "var(--font-body--family)",
+                "font_size": "1rem",
+                "line_height": "normal",
+                "letter_spacing": "normal",
+                "case": "none",
+                "wrap": "pretty",
+                "color": "var(--color-foreground)",
+                "background": false,
+                "background_color": "#00000026",
+                "corner_radius": 0,
+                "padding-block-start": 0,
+                "padding-block-end": 0,
+                "padding-inline-start": 0,
+                "padding-inline-end": 0
+              },
+              "blocks": {}
+            }
+          },
+          "block_order": [
+            "text_Hc6MaJ",
+            "text_zJUfiy"
+          ]
+        },
+        "group_eAkKJC": {
+          "type": "group",
+          "name": "t:names.column",
+          "settings": {
+            "content_direction": "column",
+            "vertical_on_mobile": true,
+            "horizontal_alignment": "flex-start",
+            "vertical_alignment": "center",
+            "align_baseline": false,
+            "horizontal_alignment_flex_direction_column": "flex-start",
+            "vertical_alignment_flex_direction_column": "flex-start",
+            "gap": 8,
+            "width": "fill",
+            "custom_width": 100,
+            "width_mobile": "fill",
+            "custom_width_mobile": 100,
+            "height": "fit",
+            "custom_height": 100,
+            "inherit_color_scheme": true,
+            "color_scheme": "",
+            "background_media": "none",
+            "video_position": "cover",
+            "background_image_position": "cover",
+            "border": "none",
+            "border_width": 1,
+            "border_opacity": 100,
+            "border_radius": 0,
+            "toggle_overlay": false,
+            "overlay_color": "#00000026",
+            "overlay_style": "solid",
+            "gradient_direction": "to top",
+            "link": "",
+            "open_in_new_tab": false,
+            "placeholder": "",
+            "padding-block-start": 10,
+            "padding-block-end": 0,
+            "padding-inline-start": 0,
+            "padding-inline-end": 0
+          },
+          "blocks": {
+            "image_z9ayQa": {
+              "type": "image",
+              "name": "t:names.image",
+              "settings": {
+                "image": "shopify://shop_images/UltraBraid_940.jpg",
+                "link": "",
+                "image_ratio": "adapt",
+                "width": "fill",
+                "custom_width": 100,
+                "width_mobile": "fill",
+                "custom_width_mobile": 100,
+                "height": "fit",
+                "border": "none",
+                "border_width": 1,
+                "border_opacity": 100,
+                "border_radius": 0,
+                "padding-block-start": 0,
+                "padding-block-end": 10,
+                "padding-inline-start": 0,
+                "padding-inline-end": 0
+              },
+              "blocks": {}
+            },
+            "text_gbKbx7": {
+              "type": "text",
+              "name": "t:names.text",
+              "settings": {
+                "text": "<h4>UltraBraid 940</h4><p>Valve Packing. Available with stainless steel, Monel®, Inconel®, or other cap materials. The cap reduces the extrusion gap and centers the stem.</p>",
+                "width": "fit-content",
+                "max_width": "normal",
+                "alignment": "left",
+                "type_preset": "rte",
+                "font": "var(--font-body--family)",
+                "font_size": "1rem",
+                "line_height": "normal",
+                "letter_spacing": "normal",
+                "case": "none",
+                "wrap": "pretty",
+                "color": "var(--color-foreground)",
+                "background": false,
+                "background_color": "#00000026",
+                "corner_radius": 0,
+                "padding-block-start": 0,
+                "padding-block-end": 0,
+                "padding-inline-start": 0,
+                "padding-inline-end": 0
+              },
+              "blocks": {}
+            },
+            "divider_cB8AhY": {
+              "type": "_divider",
+              "name": "t:names.divider",
+              "settings": {
+                "thickness": 1,
+                "corner_radius": "square",
+                "width_percent": 100,
+                "padding-block-start": 20,
+                "padding-block-end": 20
+              },
+              "blocks": {}
+            },
+            "image_KbQ7qe": {
+              "type": "image",
+              "name": "t:names.image",
+              "settings": {
+                "image": "shopify://shop_images/UltraBraid_950.jpg",
+                "link": "",
+                "image_ratio": "adapt",
+                "width": "fill",
+                "custom_width": 100,
+                "width_mobile": "fill",
+                "custom_width_mobile": 100,
+                "height": "fit",
+                "border": "none",
+                "border_width": 1,
+                "border_opacity": 100,
+                "border_radius": 0,
+                "padding-block-start": 0,
+                "padding-block-end": 10,
+                "padding-inline-start": 0,
+                "padding-inline-end": 0
+              },
+              "blocks": {}
+            },
+            "text_rXEppk": {
+              "type": "text",
+              "name": "t:names.text",
+              "settings": {
+                "text": "<h4>UltraBraid 950</h4><p>Double capped lockscrew packing set with a friction reducing coating. Capable of sealing to 37,000 P.S.I. and 1,000° F plus.</p>",
+                "width": "fit-content",
+                "max_width": "normal",
+                "alignment": "left",
+                "type_preset": "rte",
+                "font": "var(--font-body--family)",
+                "font_size": "1rem",
+                "line_height": "normal",
+                "letter_spacing": "normal",
+                "case": "none",
+                "wrap": "pretty",
+                "color": "var(--color-foreground)",
+                "background": false,
+                "background_color": "#00000026",
+                "corner_radius": 0,
+                "padding-block-start": 0,
+                "padding-block-end": 0,
+                "padding-inline-start": 0,
+                "padding-inline-end": 0
+              },
+              "blocks": {}
+            }
+          },
+          "block_order": [
+            "image_z9ayQa",
+            "text_gbKbx7",
+            "divider_cB8AhY",
+            "image_KbQ7qe",
+            "text_rXEppk"
+          ]
+        }
+      },
+      "block_order": [
+        "group_NdHVtU",
+        "group_eAkKJC"
+      ],
+      "name": "t:names.multicolumn",
+      "settings": {
+        "content_direction": "row",
+        "vertical_on_mobile": true,
+        "horizontal_alignment": "flex-start",
+        "vertical_alignment": "flex-start",
+        "align_baseline": false,
+        "horizontal_alignment_flex_direction_column": "flex-start",
+        "vertical_alignment_flex_direction_column": "center",
+        "gap": 16,
+        "section_width": "page-width",
+        "section_height": "",
+        "section_height_custom": 50,
+        "color_scheme": "",
+        "background_media": "none",
+        "video_position": "cover",
+        "background_image_position": "cover",
+        "border": "none",
+        "border_width": 1,
+        "border_opacity": 100,
+        "border_radius": 0,
+        "toggle_overlay": false,
+        "overlay_color": "#00000026",
+        "overlay_style": "solid",
+        "gradient_direction": "to top",
+        "padding-block-start": 60,
+        "padding-block-end": 30
+      }
+    },
+    "divider_AtErwj": {
+      "type": "divider",
+      "name": "t:names.divider_section",
+      "settings": {
+        "color_scheme": "",
+        "section_width": "page-width",
+        "thickness": 2,
+        "corner_radius": "square",
+        "width_percent": 100,
+        "alignment_horizontal": "center",
+        "padding-block-start": 30,
+        "padding-block-end": 30
+      }
+    },
+    "section_hHMPCm": {
+      "type": "section",
+      "blocks": {
+        "text_Rxa7r7": {
+          "type": "text",
+          "name": "t:names.heading",
+          "settings": {
+            "text": "<h2>Additional Information</h2>",
+            "width": "fit-content",
+            "max_width": "normal",
+            "alignment": "left",
+            "type_preset": "h3",
+            "font": "var(--font-body--family)",
+            "font_size": "1rem",
+            "line_height": "normal",
+            "letter_spacing": "normal",
+            "case": "none",
+            "wrap": "pretty",
+            "color": "var(--color-foreground)",
+            "background": false,
+            "background_color": "#00000026",
+            "corner_radius": 0,
+            "padding-block-start": 0,
+            "padding-block-end": 0,
+            "padding-inline-start": 0,
+            "padding-inline-end": 0
+          },
+          "blocks": {}
+        },
+        "text_bXxKHz": {
+          "type": "text",
+          "name": "t:names.text",
+          "settings": {
+            "text": "<p>Learn more about our Custom Molded Graphite Seals.</p>",
+            "width": "fit-content",
+            "max_width": "normal",
+            "alignment": "left",
+            "type_preset": "rte",
+            "font": "var(--font-body--family)",
+            "font_size": "1rem",
+            "line_height": "normal",
+            "letter_spacing": "normal",
+            "case": "none",
+            "wrap": "pretty",
+            "color": "var(--color-foreground)",
+            "background": false,
+            "background_color": "#00000026",
+            "corner_radius": 0,
+            "padding-block-start": 0,
+            "padding-block-end": 0,
+            "padding-inline-start": 0,
+            "padding-inline-end": 0
+          },
+          "blocks": {}
+        }
+      },
+      "block_order": [
+        "text_Rxa7r7",
+        "text_bXxKHz"
+      ],
+      "name": "t:names.rich_text_section",
+      "settings": {
+        "content_direction": "column",
+        "vertical_on_mobile": true,
+        "horizontal_alignment": "flex-start",
+        "vertical_alignment": "center",
+        "align_baseline": false,
+        "horizontal_alignment_flex_direction_column": "flex-start",
+        "vertical_alignment_flex_direction_column": "center",
+        "gap": 25,
+        "section_width": "page-width",
+        "section_height": "",
+        "section_height_custom": 50,
+        "color_scheme": "",
+        "background_media": "none",
+        "video_position": "cover",
+        "background_image_position": "cover",
+        "border": "none",
+        "border_width": 1,
+        "border_opacity": 100,
+        "border_radius": 0,
+        "toggle_overlay": false,
+        "overlay_color": "#00000026",
+        "overlay_style": "solid",
+        "gradient_direction": "to top",
+        "padding-block-start": 30,
+        "padding-block-end": 10
+      }
+    },
+    "custom_liquid_qeTkWW": {
+      "type": "custom-liquid",
+      "custom_css": [],
+      "name": "t:names.custom_liquid",
+      "settings": {
+        "custom_liquid": "<div style=\"font-family: Arial, sans-serif; margin: 20px 0;\">\n  <div style=\"display: inline-block; padding: 12px 24px; background-color: #ececec; border: 2px solid #333; border-bottom: none; border-radius: 10px 10px 0 0; font-weight: bold; font-size: 16px; position: relative; top: 2px; z-index: 2;\">\n    Specifications\n  </div>\n  \n  <table style=\"width: 100%; border: 2px solid #333; border-collapse: collapse; position: relative; z-index: 1;\" cellspacing=\"0\" cellpadding=\"0\">\n    <tbody>\n      <tr style=\"background-color: #ececec;\">\n        <td style=\"padding: 16px; width: 35%; vertical-align: top;\">\n          <h6 style=\"margin: 0; font-size: 15px;\">General Capabilities</h6>\n        </td>\n        <td style=\"padding: 16px; vertical-align: top;\">\n          <table border=\"0\" cellspacing=\"0\" cellpadding=\"0\" style=\"width: 100%;\">\n            <tbody>\n              <tr>\n                <td style=\"width: 50%; vertical-align: top; padding-right: 10px;\">\n                  <span style=\"line-height: 1.6;\">Die Forming<br>Die Cutting</span>\n                </td>\n                <td style=\"width: 50%; vertical-align: top;\">\n                  <span style=\"line-height: 1.6;\">Extruded</span>\n                </td>\n              </tr>\n            </tbody>\n          </table>\n        </td>\n      </tr>\n      \n      <tr style=\"background-color: #ffffff;\">\n        <td style=\"padding: 16px; vertical-align: top;\">\n          <h6 style=\"margin: 0; font-size: 15px;\">Gasket Types</h6>\n        </td>\n        <td style=\"padding: 16px; vertical-align: top;\">\n          <table border=\"0\" cellspacing=\"0\" cellpadding=\"0\" style=\"width: 100%;\">\n            <tbody>\n              <tr>\n                <td style=\"width: 50%; vertical-align: top; padding-right: 10px;\">\n                  <span style=\"line-height: 1.6;\">Lockscrew Packing<br>Stem Packing</span>\n                </td>\n                <td style=\"width: 50%; vertical-align: top;\">\n                  <span style=\"line-height: 1.6;\">LCP Packing</span>\n                </td>\n              </tr>\n            </tbody>\n          </table>\n        </td>\n      </tr>\n      \n      <tr style=\"background-color: #ececec;\">\n        <td style=\"padding: 16px; vertical-align: top;\">\n          <h6 style=\"margin: 0; font-size: 15px;\">Gasket Shape</h6>\n        </td>\n        <td style=\"padding: 16px; vertical-align: top;\">\n          <span style=\"line-height: 1.6;\">Round</span>\n        </td>\n      </tr>\n      \n      <tr style=\"background-color: #ffffff;\">\n        <td style=\"padding: 16px; vertical-align: top;\">\n          <h6 style=\"margin: 0; font-size: 15px;\">Materials</h6>\n        </td>\n        <td style=\"padding: 16px; vertical-align: top;\">\n          <table border=\"0\" cellspacing=\"0\" cellpadding=\"0\" style=\"width: 100%;\">\n            <tbody>\n              <tr>\n                <td style=\"width: 50%; vertical-align: top; padding-right: 10px;\">\n                  <span style=\"line-height: 1.6;\">Graphite<br>Stainless Steel Wire Mesh</span>\n                </td>\n                <td style=\"width: 50%; vertical-align: top;\">\n                  <span style=\"line-height: 1.6;\">Inconel® Caps</span>\n                </td>\n              </tr>\n            </tbody>\n          </table>\n        </td>\n      </tr>\n      \n      <tr style=\"background-color: #ececec;\">\n        <td style=\"padding: 16px; vertical-align: top;\">\n          <h6 style=\"margin: 0; font-size: 15px;\">Resistances</h6>\n        </td>\n        <td style=\"padding: 16px; vertical-align: top;\">\n          <table border=\"0\" cellspacing=\"0\" cellpadding=\"0\" style=\"width: 100%;\">\n            <tbody>\n              <tr>\n                <td style=\"width: 50%; vertical-align: top; padding-right: 10px;\">\n                  <span style=\"line-height: 1.6;\">Corrosion<br>Detergents<br>Grease<br>Oil</span>\n                </td>\n                <td style=\"width: 50%; vertical-align: top;\">\n                  <span style=\"line-height: 1.6;\">Rust<br>Salts<br>Steam<br>Water</span>\n                </td>\n              </tr>\n            </tbody>\n          </table>\n        </td>\n      </tr>\n      \n      <tr style=\"background-color: #ffffff;\">\n        <td style=\"padding: 16px; vertical-align: top;\">\n          <h6 style=\"margin: 0; font-size: 15px;\">Temperature Range</h6>\n        </td>\n        <td style=\"padding: 16px; vertical-align: top;\">\n          <table border=\"0\" cellspacing=\"0\" cellpadding=\"0\" style=\"width: 100%;\">\n            <tbody>\n              <tr>\n                <td style=\"width: 50%; vertical-align: top; padding-right: 10px;\">\n                  <span style=\"line-height: 1.6;\">Min<br>-100 °F</span>\n                </td>\n                <td style=\"width: 50%; vertical-align: top;\">\n                  <span style=\"line-height: 1.6;\">Max<br>800 °F (air)<br>1200 °F (steam)</span>\n                </td>\n              </tr>\n            </tbody>\n          </table>\n        </td>\n      </tr>\n      \n      <tr style=\"background-color: #ececec;\">\n        <td style=\"padding: 16px; vertical-align: top;\">\n          <h6 style=\"margin: 0; font-size: 15px;\">Pressure Range<br>with proper design</h6>\n        </td>\n        <td style=\"padding: 16px; vertical-align: top;\">\n          <span style=\"line-height: 1.6;\">Max<br>20,000 psi</span>\n        </td>\n      </tr>\n      \n      <tr style=\"background-color: #ffffff;\">\n        <td style=\"padding: 16px; vertical-align: top;\">\n          <h6 style=\"margin: 0; font-size: 15px;\">Inner/Outer Diameter</h6>\n        </td>\n        <td style=\"padding: 16px; vertical-align: top;\">\n          <table border=\"0\" cellspacing=\"0\" cellpadding=\"0\" style=\"width: 100%;\">\n            <tbody>\n              <tr>\n                <td style=\"width: 50%; vertical-align: top; padding-right: 10px;\">\n                  <span style=\"line-height: 1.6;\">Min<br>.3 in</span>\n                </td>\n                <td style=\"width: 50%; vertical-align: top;\">\n                  <span style=\"line-height: 1.6;\">Max<br>24 in</span>\n                </td>\n              </tr>\n            </tbody>\n          </table>\n        </td>\n      </tr>\n      \n      <tr style=\"background-color: #ececec;\">\n        <td style=\"padding: 16px; vertical-align: top;\">\n          <h6 style=\"margin: 0; font-size: 15px;\">Thickness</h6>\n        </td>\n        <td style=\"padding: 16px; vertical-align: top;\">\n          <table border=\"0\" cellspacing=\"0\" cellpadding=\"0\" style=\"width: 100%;\">\n            <tbody>\n              <tr>\n                <td style=\"width: 50%; vertical-align: top; padding-right: 10px;\">\n                  <span style=\"line-height: 1.6;\">Min<br>.010 in</span>\n                </td>\n                <td style=\"width: 50%; vertical-align: top;\">\n                  <span style=\"line-height: 1.6;\">Max<br>2 in</span>\n                </td>\n              </tr>\n            </tbody>\n          </table>\n        </td>\n      </tr>\n      \n      <tr style=\"background-color: #ffffff;\">\n        <td style=\"padding: 16px; vertical-align: top;\">\n          <h6 style=\"margin: 0; font-size: 15px;\">Tolerance (+/-)</h6>\n        </td>\n        <td style=\"padding: 16px; vertical-align: top;\">\n          <span style=\"line-height: 1.6;\">.010 in</span>\n        </td>\n      </tr>\n      \n      <tr style=\"background-color: #ececec;\">\n        <td style=\"padding: 16px; vertical-align: top;\">\n          <h6 style=\"margin: 0; font-size: 15px;\">Density Tolerance (+/-)</h6>\n        </td>\n        <td style=\"padding: 16px; vertical-align: top;\">\n          <span style=\"line-height: 1.6;\">5 lb/ft<sup>3</sup></span>\n        </td>\n      </tr>\n      \n      <tr style=\"background-color: #ffffff;\">\n        <td style=\"padding: 16px; vertical-align: top;\">\n          <h6 style=\"margin: 0; font-size: 15px;\">Secondary Services</h6>\n        </td>\n        <td style=\"padding: 16px; vertical-align: top;\">\n          <table border=\"0\" cellspacing=\"0\" cellpadding=\"0\" style=\"width: 100%;\">\n            <tbody>\n              <tr>\n                <td style=\"width: 50%; vertical-align: top; padding-right: 10px;\">\n                  <span style=\"line-height: 1.6;\">In-House Tooling<br>Packaging</span>\n                </td>\n                <td style=\"width: 50%; vertical-align: top;\">\n                  <span style=\"line-height: 1.6;\">Reverse Engineering</span>\n                </td>\n              </tr>\n            </tbody>\n          </table>\n        </td>\n      </tr>\n      \n      <tr style=\"background-color: #ececec;\">\n        <td style=\"padding: 16px; vertical-align: top;\">\n          <h6 style=\"margin: 0; font-size: 15px;\">Production Volume</h6>\n        </td>\n        <td style=\"padding: 16px; vertical-align: top;\">\n          <span style=\"line-height: 1.6;\">Prototype to Large Scale Production Volume Run</span>\n        </td>\n      </tr>\n      \n      <tr style=\"background-color: #ffffff;\">\n        <td style=\"padding: 16px; vertical-align: top;\">\n          <h6 style=\"margin: 0; font-size: 15px;\">Lead Times</h6>\n        </td>\n        <td style=\"padding: 16px; vertical-align: top;\">\n          <span style=\"line-height: 1.6;\">2 to 6 weeks</span>\n        </td>\n      </tr>\n    </tbody>\n  </table>\n</div>",
+        "color_scheme": "scheme-1",
+        "section_width": "page-width",
+        "padding-block-start": 0,
+        "padding-block-end": 0
+      }
+    },
+    "custom_liquid_KWTT9P": {
+      "type": "custom-liquid",
+      "name": "t:names.custom_liquid",
+      "settings": {
+        "custom_liquid": "<div style=\"font-family: Arial, sans-serif; margin: 20px 0;\">\n  <div style=\"display: inline-block; padding: 12px 24px; background-color: #ececec; border: 2px solid #333; border-bottom: none; border-radius: 10px 10px 0 0; font-weight: bold; font-size: 16px; position: relative; top: 2px; z-index: 2;\">\n    Industry & Applications\n  </div>\n  \n  <table style=\"width: 100%; border: 2px solid #333; border-collapse: collapse; position: relative; z-index: 1;\" cellspacing=\"0\" cellpadding=\"0\">\n    <tbody>\n      <tr style=\"background-color: #ececec;\">\n        <td style=\"padding: 16px; width: 35%; vertical-align: top;\">\n          <h6 style=\"margin: 0; font-size: 15px;\">Industry Focus</h6>\n        </td>\n        <td style=\"padding: 16px; vertical-align: top;\">\n          <table border=\"0\" cellspacing=\"0\" cellpadding=\"0\" style=\"width: 100%;\">\n            <tbody>\n              <tr>\n                <td style=\"width: 50%; vertical-align: top; padding-right: 10px;\">\n                  <span style=\"line-height: 1.6;\">Oil &amp; Gas Producers<br>Pipelines<br>Refineries<br>Chemical Plants</span>\n                </td>\n                <td style=\"width: 50%; vertical-align: top;\">\n                  <span style=\"line-height: 1.6;\">Power Plants<br>OEM Manufacturers<br>Geothermal</span>\n                </td>\n              </tr>\n            </tbody>\n          </table>\n        </td>\n      </tr>\n      \n      <tr style=\"background-color: #ffffff;\">\n        <td style=\"padding: 16px; vertical-align: top;\">\n          <h6 style=\"margin: 0; font-size: 15px;\">Intended Applications</h6>\n        </td>\n        <td style=\"padding: 16px; vertical-align: top;\">\n          <table border=\"0\" cellspacing=\"0\" cellpadding=\"0\" style=\"width: 100%;\">\n            <tbody>\n              <tr>\n                <td style=\"width: 50%; vertical-align: top; padding-right: 10px;\">\n                  <span style=\"line-height: 1.6;\">Wellheads<br>Gate Valves</span>\n                </td>\n                <td style=\"width: 50%; vertical-align: top;\">\n                  <span style=\"line-height: 1.6;\">Ball Valves<br>Plug Valves</span>\n                </td>\n              </tr>\n            </tbody>\n          </table>\n        </td>\n      </tr>\n      \n      <tr style=\"background-color: #ececec;\">\n        <td style=\"padding: 16px; vertical-align: top;\">\n          <h6 style=\"margin: 0; font-size: 15px;\">Industry Standards</h6>\n        </td>\n        <td style=\"padding: 16px; vertical-align: top;\">\n          <span style=\"line-height: 1.6;\">BBB Accredited Business</span>\n        </td>\n      </tr>\n      \n      <tr style=\"background-color: #ffffff;\">\n        <td style=\"padding: 16px; vertical-align: top;\">\n          <h6 style=\"margin: 0; font-size: 15px;\">File Formats</h6>\n        </td>\n        <td style=\"padding: 16px; vertical-align: top;\">\n          <table border=\"0\" cellspacing=\"0\" cellpadding=\"0\" style=\"width: 100%;\">\n            <tbody>\n              <tr>\n                <td style=\"width: 50%; vertical-align: top; padding-right: 10px;\">\n                  <span style=\"line-height: 1.6;\">CAD<br>PDF</span>\n                </td>\n                <td style=\"width: 50%; vertical-align: top;\">\n                  <span style=\"line-height: 1.6;\">Images</span>\n                </td>\n              </tr>\n            </tbody>\n          </table>\n        </td>\n      </tr>\n    </tbody>\n  </table>\n</div>",
+        "color_scheme": "",
+        "section_width": "page-width",
+        "padding-block-start": 0,
+        "padding-block-end": 40
+      }
+    }
+  },
+  "order": [
+    "main",
+    "hero_PzjKQ3",
+    "section_X3Kh9d",
+    "divider_AtErwj",
+    "section_hHMPCm",
+    "custom_liquid_qeTkWW",
+    "custom_liquid_KWTT9P"
+  ]
+}
