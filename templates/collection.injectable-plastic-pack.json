@@ -239,7 +239,7 @@
               "type": "custom-liquid",
               "name": "t:names.custom_liquid",
               "settings": {
-                "custom_liquid": "<p class=\"p_card-button button button--primary\">Learn More</p>"
+                "custom_liquid": "<p class=\"p_card-button button button--primary\">Buy Now</p>"
               },
               "blocks": {}
             }

@@ -143,7 +143,7 @@
         "section_height_custom": 50,
         "color_scheme": "scheme-5",
         "toggle_overlay": true,
-        "overlay_color": "#000000a2",
+        "overlay_color": "#000000a3",
         "overlay_style": "solid",
         "gradient_direction": "to top",
         "blurred_reflection": true,
@@ -216,32 +216,6 @@
             "padding-inline-end": 0
           },
           "blocks": {
-            "text_Hw7AKD": {
-              "type": "text",
-              "name": "t:names.text",
-              "settings": {
-                "text": "<p><strong>SG-630</strong></p>",
-                "width": "fit-content",
-                "max_width": "normal",
-                "alignment": "left",
-                "type_preset": "custom",
-                "font": "var(--font-body--family)",
-                "font_size": "0.875rem",
-                "line_height": "normal",
-                "letter_spacing": "normal",
-                "case": "none",
-                "wrap": "pretty",
-                "color": "var(--color-foreground)",
-                "background": false,
-                "background_color": "#00000026",
-                "corner_radius": 0,
-                "padding-block-start": 0,
-                "padding-block-end": 0,
-                "padding-inline-start": 0,
-                "padding-inline-end": 0
-              },
-              "blocks": {}
-            },
             "text_Bi3r8A": {
               "type": "text",
               "name": "t:names.heading",
@@ -295,7 +269,6 @@
             }
           },
           "block_order": [
-            "text_Hw7AKD",
             "text_Bi3r8A",
             "text_jCVVQd"
           ]
@@ -478,13 +451,29 @@
                 "padding-inline-end": 0
               },
               "blocks": {}
+            },
+            "button_CJ4qbJ": {
+              "type": "button",
+              "name": "t:names.button",
+              "settings": {
+                "label": "Shop SG-630",
+                "link": "shopify://products/sg-630-graphite-based-injection-packing",
+                "open_in_new_tab": false,
+                "style_class": "button",
+                "width": "fit-content",
+                "custom_width": 100,
+                "width_mobile": "fit-content",
+                "custom_width_mobile": 100
+              },
+              "blocks": {}
             }
           },
           "block_order": [
             "text_C6myPb",
             "text_wFBApL",
             "text_74dUr8",
-            "text_ATtbBL"
+            "text_ATtbBL",
+            "button_CJ4qbJ"
           ]
         },
         "image_MgYUMj": {
@@ -513,6 +502,9 @@
       "block_order": [
         "group_ELezLh",
         "image_MgYUMj"
+      ],
+      "custom_css": [
+        "a.button {font-weight: bold; font-size: 16px; --button-padding-block: 10px; clip-path: polygon(10% 0, 100% 0, 100% 75%, 90% 100%, 0 100%, 0 25%); border-radius: 0;}"
       ],
       "name": "t:names.image_with_text",
       "settings": {
