@@ -1,7 +1,7 @@
 {% doc %}
   Free quote submission form - allows both logged-in and guest users to submit quote requests.
   If user is logged in, pre-fills customer details. Otherwise, allows custom details.
-  Integrates with cart items and submits to quote API.
+  Integrates with cart items and submits as a native Shopify contact form.
 {% enddoc %}
 {% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
 
@@ -324,15 +324,9 @@
   }
 {% endstyle %}
 
-<contact-form-{{ ai_gen_id }}
+<div
   class="ai-contact-form-{{ ai_gen_id }}"
   {{ block.shopify_attributes }}
-  data-quote-request-config
-  data-api-base-url="{{ settings.quote_api_base_url }}"
-  data-secret="{{ settings.quote_api_secret }}"
-  data-customer-id="{% if customer %}{{ customer.id }}{% endif %}"
-  data-customer-email="{% if customer %}{{ customer.email }}{% endif %}"
-  data-customer-name="{% if customer %}{{ customer.name }}{% endif %}"
 >
   <div class="ai-contact-form__header-{{ ai_gen_id }}">
     <h2 class="ai-contact-form__title-{{ ai_gen_id }}">{{ block.settings.title }}</h2>
@@ -353,7 +347,25 @@
     </div>
   </div>
 
-  <div class="ai-contact-form__form-{{ ai_gen_id }}" data-quote-free-form>
+  {% assign form_class = 'ai-contact-form__form-' | append: ai_gen_id %}
+  {%- form 'contact', id: 'ContactForm', class: form_class -%}
+    {%- if form.posted_successfully? -%}
+      <div class="ai-contact-form__message-{{ ai_gen_id }} ai-contact-form__success-{{ ai_gen_id }}" tabindex="-1" autofocus>
+        {{ block.settings.success_message | default: "Thank you for contacting us! We'll get back to you as soon as possible." }}
+      </div>
+      <script>
+        fetch('/cart/clear.js', { method: 'POST' }).then(() => {
+          setTimeout(() => {
+            window.location.href = '/pages/free-quote?submitted=1';
+          }, 1500);
+        });
+      </script>
+    {%- elsif form.errors -%}
+      <div class="ai-contact-form__message-{{ ai_gen_id }} ai-contact-form__error-{{ ai_gen_id }}" tabindex="-1" autofocus>
+        {{ form.errors | default_errors }}
+      </div>
+    {%- endif -%}
+
     <div class="ai-contact-form__field-group-{{ ai_gen_id }}" data-delay="0">
       <label for="contact-name-{{ ai_gen_id }}" class="ai-contact-form__label-{{ ai_gen_id }}">
         {{ block.settings.name_label }}
@@ -362,13 +374,12 @@
       <input
         type="text"
         id="contact-name-{{ ai_gen_id }}"
-        name="name"
+        name="contact[name]"
         class="ai-contact-form__input-{{ ai_gen_id }}"
-        value="{% if customer %}{{ customer.name }}{% endif %}"
+        value="{% if form.name %}{{ form.name }}{% elsif customer %}{{ customer.name }}{% endif %}"
         required
         aria-required="true"
         placeholder="{{ block.settings.name_placeholder }}"
-        data-quote-customer-name
       >
     </div>
 
@@ -380,14 +391,13 @@
       <input
         type="email"
         id="contact-email-{{ ai_gen_id }}"
-        name="email"
+        name="contact[email]"
         class="ai-contact-form__input-{{ ai_gen_id }}"
-        value="{% if customer %}{{ customer.email }}{% endif %}"
+        value="{% if form.email %}{{ form.email }}{% elsif customer %}{{ customer.email }}{% endif %}"
         required
         aria-required="true"
         autocomplete="email"
         placeholder="{{ block.settings.email_placeholder }}"
-        data-quote-customer-email
       >
     </div>
 
@@ -398,19 +408,17 @@
       <input
         type="tel"
         id="contact-phone-{{ ai_gen_id }}"
-        name="phone"
+        name="contact[phone]"
         class="ai-contact-form__input-{{ ai_gen_id }}"
-        value="{% if customer %}{{ customer.phone }}{% endif %}"
+        value="{% if form.phone %}{{ form.phone }}{% elsif customer %}{{ customer.phone }}{% endif %}"
         autocomplete="tel"
         placeholder="{{ block.settings.phone_placeholder }}"
-        data-quote-customer-phone
       >
     </div>
 
     <div class="ai-contact-form__field-group-{{ ai_gen_id }}" data-delay="300">
       <label class="ai-contact-form__label-{{ ai_gen_id }}">
         {{ block.settings.collections_label }}
-        <span class="ai-contact-form__required-{{ ai_gen_id }}">*</span>
       </label>
       <div class="ai-contact-form__collections-{{ ai_gen_id }}">
         {% if block.settings.collections != blank %}
@@ -419,10 +427,9 @@
               <input
                 type="checkbox"
                 id="collection-{{ collection.id }}-{{ ai_gen_id }}"
-                name="interested_in"
-                value="{{ collection.title }}"
+                name="contact[Interested In {{ collection.title }}]"
+                value="Yes"
                 class="ai-contact-form__checkbox-{{ ai_gen_id }}"
-                data-quote-interest
               >
               <label
                 for="collection-{{ collection.id }}-{{ ai_gen_id }}"
@@ -438,10 +445,9 @@
           <input
             type="checkbox"
             id="other-checkbox-{{ ai_gen_id }}"
-            name="interested_in"
-            value="Other"
+            name="contact[Interested In Other]"
+            value="Yes"
             class="ai-contact-form__checkbox-{{ ai_gen_id }} ai-contact-form__other-checkbox-{{ ai_gen_id }}"
-            data-quote-interest
           >
           <label for="other-checkbox-{{ ai_gen_id }}" class="ai-contact-form__checkbox-label-{{ ai_gen_id }}">
             {{ block.settings.other_label }}
@@ -453,10 +459,9 @@
         <input
           type="text"
           id="other-input-{{ ai_gen_id }}"
-          name="other_interest"
+          name="contact[Other Interest Detail]"
           class="ai-contact-form__input-{{ ai_gen_id }}"
           placeholder="{{ block.settings.other_placeholder }}"
-          data-quote-other-interest
         >
       </div>
     </div>
@@ -467,39 +472,44 @@
       </label>
       <textarea
         id="contact-message-{{ ai_gen_id }}"
-        name="message"
+        name="contact[body]"
         class="ai-contact-form__textarea-{{ ai_gen_id }}"
         placeholder="{{ block.settings.message_placeholder }}"
-        data-quote-note
-      ></textarea>
+      >{%- if form.body -%}{{ form.body }}{%- endif -%}</textarea>
+    </div>
+
+    <div id="cart-hidden-fields-{{ ai_gen_id }}">
+      {%- for item in cart.items -%}
+        <input type="hidden" name="contact[Item {{ forloop.index }}]" value="{{ item.quantity }}x {{ item.product.title }}{% unless item.product.has_only_default_variant %} - {{ item.variant.title }}{% endunless %} (SKU: {{ item.sku | default: 'N/A' }}) - Price: {{ item.final_line_price | money }}">
+      {%- endfor -%}
+      <input type="hidden" name="contact[Total Price]" value="{{ cart.total_price | money }}">
     </div>
 
     <div class="ai-contact-form__field-group-{{ ai_gen_id }}" data-delay="500">
-      <button type="button" class="ai-contact-form__button-{{ ai_gen_id }}" data-quote-free-submit>
+      <button type="submit" class="ai-contact-form__button-{{ ai_gen_id }}" id="submit-button-{{ ai_gen_id }}">
         <span class="ai-contact-form__button-text-{{ ai_gen_id }}">{{ block.settings.button_text }}</span>
       </button>
     </div>
-
-    <div class="ai-contact-form__message-{{ ai_gen_id }}" data-quote-message style="display:none;"></div>
-  </div>
-</contact-form-{{ ai_gen_id }}>
+  {%- endform -%}
+</div>
 
 <script>
   (function() {
-    class ContactForm{{ ai_gen_id }} extends HTMLElement {
-      constructor() {
-        super();
+    class ContactForm{{ ai_gen_id }} {
+      constructor(element) {
+        this.element = element;
+        this.init();
       }
 
-      connectedCallback() {
+      init() {
         this.animateFields();
         this.setupOtherOption();
-        this.setupQuoteSubmission();
         this.loadCartItems();
+        this.setupFormValidation();
       }
 
       animateFields() {
-        const fields = this.querySelectorAll('.ai-contact-form__field-group-{{ ai_gen_id }}');
+        const fields = this.element.querySelectorAll('.ai-contact-form__field-group-{{ ai_gen_id }}');
         
         const observer = new IntersectionObserver((entries) => {
           entries.forEach((entry) => {
@@ -520,157 +530,61 @@
         });
       }
 
-      setupQuoteSubmission() {
-        const submitBtn = this.querySelector('[data-quote-free-submit]');
-        if (!submitBtn) return;
+      setupFormValidation() {
+        const form = this.element.querySelector('form');
+        const submitButton = this.element.querySelector('#submit-button-{{ ai_gen_id }}');
+        const buttonText = this.element.querySelector('.ai-contact-form__button-text-{{ ai_gen_id }}');
 
-        submitBtn.addEventListener('click', async (e) => {
-          e.preventDefault();
-          await this.handleQuoteSubmit();
+        if (!form) return;
+
+        form.addEventListener('submit', (e) => {
+          const cartCount = parseInt(this.element.querySelector('[data-cart-count]')?.textContent || '0');
+          if (cartCount === 0) {
+            e.preventDefault();
+            alert('Your quote list is empty. Please add items to your quote before submitting.');
+            return;
+          }
+
+          // Optional: ensure "other" field is not empty if "Other" is checked
+          const otherCheckbox = this.element.querySelector('.ai-contact-form__other-checkbox-{{ ai_gen_id }}');
+          const otherInput = this.element.querySelector('#other-input-{{ ai_gen_id }}');
+          
+          if (otherCheckbox?.checked && !otherInput?.value.trim()) {
+            e.preventDefault();
+            alert('Please specify your other interest.');
+            otherInput.focus();
+            return;
+          }
+
+          buttonText.textContent = 'Submitting...';
+          submitButton.disabled = true;
+          
+          // Add hidden fields dynamically based on current cart
+          this.updateHiddenCartFields(form);
         });
       }
 
-      async handleQuoteSubmit() {
-        const submitButton = this.querySelector('[data-quote-free-submit]');
-        const buttonText = submitButton.querySelector('.ai-contact-form__button-text-{{ ai_gen_id }}');
-        const originalText = buttonText.textContent;
-
-        // Validate form
-        const nameInput = this.querySelector('[data-quote-customer-name]');
-        const emailInput = this.querySelector('[data-quote-customer-email]');
-        const checkboxes = this.querySelectorAll('[data-quote-interest]');
-
-        if (!nameInput.value.trim()) {
-          this.showErrorMessage('Please enter your name');
-          return;
-        }
-
-        if (!emailInput.value.trim()) {
-          this.showErrorMessage('Please enter your email');
-          return;
-        }
-
-        const isChecked = Array.from(checkboxes).some(cb => cb.checked);
-        if (!isChecked) {
-          this.showErrorMessage('Please select at least one option from "Interested in"');
-          return;
-        }
-
+      async updateHiddenCartFields(form) {
         try {
-          buttonText.textContent = 'Submitting...';
-          submitButton.disabled = true;
-          this.clearMessages();
-
-          // Get cart items
-          const cartResponse = await fetch('/cart.js');
-          const cart = await cartResponse.json();
-
-          if (!cart.items || cart.items.length === 0) {
-            this.showErrorMessage('Your quote list is empty. Please add items to your quote before submitting.');
-            return;
-          }
-
-          // Get config
-          const config = this.getConfig();
-          if (!config.apiBaseUrl || !config.secret) {
-            this.showErrorMessage('Quote system is not configured. Please contact support.');
-            return;
-          }
-
-          // Build customer data
-          const customerName = nameInput.value.trim();
-          const customerEmail = emailInput.value.trim();
-          const customerPhone = this.querySelector('[data-quote-customer-phone]')?.value.trim() || '';
-
-          // Build note with interests and message
-          const interests = Array.from(checkboxes)
-            .filter(cb => cb.checked)
-            .map(cb => cb.value);
-          const otherInterest = this.querySelector('[data-quote-other-interest]')?.value.trim() || '';
-          const message = this.querySelector('[data-quote-note]')?.value.trim() || '';
-
-          let noteText = '';
-          if (interests.length > 0) {
-            noteText += 'Interested in: ' + interests.join(', ');
-            if (otherInterest && interests.includes('Other')) {
-              noteText += ' (' + otherInterest + ')';
-            }
-            noteText += '\n\n';
-          }
-          if (message) {
-            noteText += message;
-          }
-
-          // Map cart items to quote format
-          const items = cart.items.map(item => ({
-            productId: String(item.product_id || ''),
-            variantId: String(item.variant_id || item.id || ''),
-            title: item.product_title || item.title || '',
-            variantTitle: item.variant_title || '',
-            sku: item.sku || '',
-            quantity: item.quantity,
-            price: item.price / 100,
-            imageUrl: item.image || item.featured_image?.url || '',
-            productUrl: item.url || ''
-          }));
-
-          // Submit quote
-          const response = await fetch(`${config.apiBaseUrl}/api/quotes`, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              'X-QUOTE-SECRET': config.secret
-            },
-            body: JSON.stringify({
-              customer: {
-                shopifyCustomerId: config.customerId || null,
-                email: customerEmail,
-                name: customerName,
-                phone: customerPhone || null
-              },
-              note: noteText,
-              items
-            })
-          });
-
-          if (!response.ok) {
-            const errorData = await response.json().catch(() => ({}));
-            throw new Error(errorData.error || 'Failed to submit quote');
-          }
-
-          const result = await response.json();
-
-          // Clear cart
-          await fetch('/cart/clear.js', { method: 'POST' });
-
-          // Show success and redirect
-          this.showSuccessMessage();
+          const response = await fetch('/cart.js');
+          const cart = await response.json();
+          const hiddenFieldsContainer = this.element.querySelector('#cart-hidden-fields-{{ ai_gen_id }}');
           
-          setTimeout(() => {
-            if (result.quoteId && config.customerId) {
-              window.location.href = `/pages/quote-details?quoteId=${encodeURIComponent(result.quoteId)}`;
-            } else {
-              window.location.href = '/pages/free-quote?submitted=1';
-            }
-          }, 1500);
-
-        } catch (error) {
-          console.error('Quote submission error:', error);
-          this.showErrorMessage(error.message || 'Failed to submit quote. Please try again.');
-        } finally {
-          buttonText.textContent = originalText;
-          submitButton.disabled = false;
+          if (!hiddenFieldsContainer || !cart.items) return;
+          
+          let fieldsHtml = '';
+          cart.items.forEach((item, index) => {
+            const variantText = !item.product_has_only_default_variant && item.variant_title ? ` - ${item.variant_title}` : '';
+            const skuText = item.sku ? `(SKU: ${item.sku}) - ` : '';
+            const price = (item.final_line_price / 100).toFixed(2);
+            fieldsHtml += `<input type="hidden" name="contact[Item ${index + 1}]" value="${item.quantity}x ${item.product_title}${variantText} ${skuText}Price: $${price}">\n`;
+          });
+          fieldsHtml += `<input type="hidden" name="contact[Total Price]" value="$${(cart.total_price / 100).toFixed(2)}">`;
+          
+          hiddenFieldsContainer.innerHTML = fieldsHtml;
+        } catch (e) {
+          console.error('Error updating cart hidden fields', e);
         }
-      }
-
-      getConfig() {
-        return {
-          apiBaseUrl: this.dataset.apiBaseUrl || '',
-          secret: this.dataset.secret || '',
-          customerId: this.dataset.customerId || '',
-          customerEmail: this.dataset.customerEmail || '',
-          customerName: this.dataset.customerName || ''
-        };
       }
 
       async loadCartItems() {
@@ -678,8 +592,8 @@
           const response = await fetch('/cart.js');
           const cart = await response.json();
           
-          const cartList = this.querySelector('[data-cart-list]');
-          const cartCount = this.querySelector('[data-cart-count]');
+          const cartList = this.element.querySelector('[data-cart-list]');
+          const cartCount = this.element.querySelector('[data-cart-count]');
           
           if (!cartList || !cartCount) return;
           
@@ -715,9 +629,9 @@
       }
 
       setupOtherOption() {
-        const otherCheckbox = this.querySelector('.ai-contact-form__other-checkbox-{{ ai_gen_id }}');
-        const otherInputWrapper = this.querySelector('#other-input-wrapper-{{ ai_gen_id }}');
-        const otherInput = this.querySelector('#other-input-{{ ai_gen_id }}');
+        const otherCheckbox = this.element.querySelector('.ai-contact-form__other-checkbox-{{ ai_gen_id }}');
+        const otherInputWrapper = this.element.querySelector('#other-input-wrapper-{{ ai_gen_id }}');
+        const otherInput = this.element.querySelector('#other-input-{{ ai_gen_id }}');
 
         if (otherCheckbox && otherInputWrapper && otherInput) {
           otherCheckbox.addEventListener('change', function() {
@@ -731,39 +645,14 @@
           });
         }
       }
-
-
-      clearMessages() {
-        const messageDiv = this.querySelector('[data-quote-message]');
-        if (messageDiv) {
-          messageDiv.style.display = 'none';
-          messageDiv.textContent = '';
-          messageDiv.className = 'ai-contact-form__message-{{ ai_gen_id }}';
-        }
-      }
-
-      showSuccessMessage() {
-        const messageDiv = this.querySelector('[data-quote-message]');
-        if (messageDiv) {
-          messageDiv.className = 'ai-contact-form__message-{{ ai_gen_id }} ai-contact-form__success-{{ ai_gen_id }}';
-          messageDiv.textContent = {{ block.settings.success_message | json }};
-          messageDiv.style.display = 'block';
-          messageDiv.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        }
-      }
-
-      showErrorMessage(message) {
-        const messageDiv = this.querySelector('[data-quote-message]');
-        if (messageDiv) {
-          messageDiv.className = 'ai-contact-form__message-{{ ai_gen_id }} ai-contact-form__error-{{ ai_gen_id }}';
-          messageDiv.textContent = message;
-          messageDiv.style.display = 'block';
-          messageDiv.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        }
-      }
     }
 
-    customElements.define('contact-form-{{ ai_gen_id }}', ContactForm{{ ai_gen_id }});
+    document.addEventListener('DOMContentLoaded', () => {
+      const formElement = document.querySelector('.ai-contact-form-{{ ai_gen_id }}');
+      if (formElement) {
+        new ContactForm{{ ai_gen_id }}(formElement);
+      }
+    });
   })();
 </script>
 
